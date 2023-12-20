@@ -2,32 +2,45 @@ import io
 import os
 
 import pandas as pd
-from google.colab import files
+# from google.colab import files
 from numpy import hstack
 
-from pandora.Config.Config import Config
-from pandora.Helper.Helper import Helper
+from src.Config.Config import Config
+from src.Helper.Helper import Helper
 
 
 class DataLoader:
-    @staticmethod
-    def upload_and_read_csv_in_colab(name):
-        print('\nSelect file for ' + name + ' ...\n')
-        uploaded = files.upload()
-        file_name = list(uploaded.keys())[0]
-        if name.lower() not in file_name.lower():
-            raise ValueError("uploaded dataset is incorrect")
-        file_content = uploaded[file_name]
-        print('\nSelected file ' + file_name + ' is begin to read ...\n')
-        # load dataset
-        series = pd.read_csv(io.BytesIO(file_content))
-        return series
+    # @staticmethod
+    # def upload_and_read_csv_in_colab(name):
+    #     print('\nSelect file for ' + name + ' ...\n')
+    #     uploaded = files.upload()
+    #     file_name = list(uploaded.keys())[0]
+    #     if name.lower() not in file_name.lower():
+    #         raise ValueError("uploaded dataset is incorrect")
+    #     file_content = uploaded[file_name]
+    #     print('\nSelected file ' + file_name + ' is begin to read ...\n')
+    #     # load dataset
+    #     series = pd.read_csv(io.BytesIO(file_content))
+    #     return series
+    #
+    # @staticmethod
+    # def read_csv_files_from_drive_in_colab(folder_path=Config.drive_csv_folder_path):
+    #     # Navigate to the folder containing your CSV files
+    #     %cd $folder_path
+    #
+    #     # Get a list of all CSV files in the folder
+    #     csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
+    #
+    #     # Read each CSV file into a DataFrame and store them in a dictionary
+    #     dataframes = {}
+    #     for file in csv_files:
+    #         file_path = os.path.join(folder_path, file)
+    #         dataframes[file] = pd.read_csv(file_path)
+    #     return dataframes
 
     @staticmethod
-    def read_csv_files_from_drive_in_colab(folder_path=Config.drive_csv_folder_path):
-        # Navigate to the folder containing your CSV files
-        %cd $folder_path
-
+    def read_csv_files_from_local():
+        folder_path = './iran_stock'
         # Get a list of all CSV files in the folder
         csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
 
@@ -91,3 +104,27 @@ class DataLoader:
         last = Helper.flatten_arr(dataset[-1])
 
         return train, test, last
+
+    @staticmethod
+    def get_datasets():
+        # 3. get each dataset according to env
+        if Config.colab:
+            dfs = DataLoader.read_csv_files_from_drive_in_colab(Config.drive_csv_folder_path)
+        else:
+            dfs = DataLoader.read_csv_files_from_local()
+
+        ir_dollar = dfs[Config.dollar_file_name]
+        ir_home = dfs[Config.home_file_name]
+        ir_oil = dfs[Config.oil_file_name]
+        ir_car = dfs[Config.car_file_name]
+        ir_gold = dfs[Config.gold_file_name]
+
+        datasets = {
+            Config.Dollar: ir_dollar,
+            Config.Home: ir_home,
+            Config.Oil: ir_oil,
+            Config.Car: ir_car,
+            Config.Gold: ir_gold
+        }
+
+        return datasets

@@ -1,5 +1,7 @@
+import os
+
 class Config:
-    colab = True
+    colab = False
     plotting = False
     date_col = "<DTYYYYMMDD>"
     start_date = '2017-06-10'
@@ -9,7 +11,7 @@ class Config:
     n_steps = 3
     dropout_rate = 0.2
     prediction_col = '<CLOSE>'
-    local_csv_folder_path = '../../iran_stock/'
+    local_csv_folder_path = '../../iran_stock'
     drive_csv_folder_path = '/content/drive/My Drive/iran_stock'
     drive_model_folder_path = '/content/drive/My Drive/time_series_models'
     # 1. set csv dataset file names
@@ -38,7 +40,7 @@ class Config:
     # series type
     univariate = 'univariate'
     multivariate = 'multivariate'
-
+    base_project_path = os.path.abspath(os.path.dirname(__file__))
     plot_labels = ['M-CNN', 'U-CNN',
                    'M-B-LSTM', 'U-B-LSTM', 'M-LSTM', 'U-LSTM',
                    'M-GRU', 'U-GRU', 'M-B-GRU', 'U-B-GRU',
