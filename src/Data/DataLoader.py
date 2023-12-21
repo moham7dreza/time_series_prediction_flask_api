@@ -71,7 +71,7 @@ class DataLoader:
             # Assuming 'date' is the column containing date in integer format
             dataset[date_col] = pd.to_datetime(dataset[date_col], format='%Y%m%d')
         else:
-            dataset[date_col] = pd.to_datetime(dataset[date_col])
+            dataset[date_col] = pd.to_datetime(dataset[date_col], format='mixed')
 
         # Convert object columns to strings
         object_columns = dataset.select_dtypes(include='object').columns
@@ -118,6 +118,12 @@ class DataLoader:
         ir_oil = dfs[Config.oil_file_name]
         ir_car = dfs[Config.car_file_name]
         ir_gold = dfs[Config.gold_file_name]
+
+        ir_dollar = DataLoader.data_preprocessing(ir_dollar, format=False)
+        ir_home = DataLoader.data_preprocessing(ir_home)
+        ir_oil = DataLoader.data_preprocessing(ir_oil)
+        ir_car = DataLoader.data_preprocessing(ir_car)
+        ir_gold = DataLoader.data_preprocessing(ir_gold)
 
         datasets = {
             Config.Dollar: ir_dollar,
