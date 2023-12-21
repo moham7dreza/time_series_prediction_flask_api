@@ -9,18 +9,38 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/')
-def attack():
+@app.route('/datasets')
+def get_datasets():
     datasets = DataLoader.get_datasets()
     response = {}
     for name, dataset in datasets.items():
         response[name] = {index + 1: {"date": date, "close": close} for index, (date, close) in
-                    enumerate(zip(dataset.index.to_list(), dataset[Config.prediction_col].to_list()))}
+                          enumerate(zip(dataset.index.to_list(), dataset[Config.prediction_col].to_list()))}
 
     return jsonify(
         {
             'status': 'OK',
             'data': response
+        }
+    )
+
+
+@app.route('/models-name')
+def get_models_name():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': Config.models_name
+        }
+    )
+
+
+@app.route('/datasets-name')
+def get_datasets_name():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': Config.datasets_name
         }
     )
 

@@ -1,5 +1,6 @@
 import os
 
+
 class Config:
     colab = False
     plotting = False
@@ -21,12 +22,13 @@ class Config:
     home_file_name = 'Maskan.Invest_from_2014.csv'
     gold_file_name = 'Lotus.Gold.Com.ETF_from_2017.csv'
     # dataset titles
-    titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold',]
+    titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold', ]
     Dollar = 'Dollar'
     Home = 'Home'
     Oil = 'Oil'
     Car = 'Car'
     Gold = 'Gold'
+    datasets_name = [Dollar, Home, Oil, Car, Gold]
     # model names
     CNN = 'CNN'
     LSTM = 'LSTM'
@@ -37,6 +39,17 @@ class Config:
     bi_ANN = 'bi-ANN'
     RNN = 'RNN'
     bi_RNN = 'bi-RNN'
+    models_name = [
+        CNN,
+        LSTM,
+        bi_LSTM,
+        GRU,
+        bi_GRU,
+        ANN,
+        bi_ANN,
+        RNN,
+        bi_RNN,
+    ]
     # series type
     univariate = 'univariate'
     multivariate = 'multivariate'
