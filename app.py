@@ -61,13 +61,10 @@ def get_series_name():
 def make_prediction():
     requests = request.get_json()
 
-    # Config.setNSteps(requests.get('n_steps'))
-    # requested_datasets = requests.get('datasets')
-    requested_datasets = [Config.Dollar]
-    # requested_models = requests.get('models')
-    requested_models = [Config.CNN]
-    # requested_series = requests.get('series')
-    requested_series = [Config.multivariate]
+    Config.setNSteps(requests.get('n_steps'))
+    requested_datasets = requests.get('datasets')
+    requested_models = requests.get('models')
+    requested_series = requests.get('series')
 
     datasets = DataLoader.get_datasets()
     if Config.multivariate in requested_series:
