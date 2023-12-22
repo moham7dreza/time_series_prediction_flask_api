@@ -58,14 +58,16 @@ def get_series_name():
 def make_prediction():
     requests = request.get_json()
 
-    Config.n_steps = requests.n_steps
-    requested_datasets = requests.datasets
-    requested_models = requests.models
-    requested_series = requests.series
+    # Config.setNSteps(requests.get('n_steps'))
+    # requested_datasets = requests.get('datasets')
+    requested_datasets = [Config.Dollar]
+    requested_models = requests.get('models')
+    requested_series = requests.get('series')
 
     datasets = DataLoader.get_datasets()
     results = {}
     for dataset_name in requested_datasets:
+        # print(dataset_name)
         univariates = Runner.run_for_univariate_series_ir(datasets[dataset_name])
         results[dataset_name] = univariates
 

@@ -5,6 +5,7 @@ from src.Helper.Helper import Helper
 from src.Model.ModelBuilder import ModelBuilder
 from keras.models import load_model
 
+
 class Univariate:
     @staticmethod
     def univariant_series(model_name, train, test):
@@ -16,9 +17,9 @@ class Univariate:
 
         # Define the path for saving/loading the model
         if Config.colab:
-            model_path = Config.drive_model_folder_path + '/{}.h5'.format('M-' + model_name)
+            model_path = Config.drive_model_folder_path + '/{}.h5'.format('U-' + model_name)
         else:
-            model_path = Config.local_model_folder_path + '/{}.h5'.format('M-' + model_name)
+            model_path = Config.local_model_folder_path + '/{}.h5'.format('U-' + model_name)
 
         # Check if the model file exists
         if os.path.exists(model_path):

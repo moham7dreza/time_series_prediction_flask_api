@@ -7,7 +7,7 @@ class Config:
     date_col = "<DTYYYYMMDD>"
     start_date = '2017-06-10'
     end_date = '2022-12-03'
-    n_steps = None
+    n_steps = 3
     epochs_for_multivariate_series = 100
     epochs_for_univariate_series = 100
     dropout_rate = 0.2
@@ -62,3 +62,11 @@ class Config:
                    'M-ANN', 'U-ANN', 'M-B-ANN', 'U-N-ANN',
                    'M-RNN', 'U-RNN', 'M-B-RNN', 'U-N-RNN',
                    'REAL']
+
+    @staticmethod
+    def setNSteps(n_steps):
+        Config.n_steps = n_steps
+
+    @staticmethod
+    def getNSteps():
+        return Config.n_steps

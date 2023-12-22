@@ -6,6 +6,7 @@ from src.Helper.Helper import Helper
 from src.Model.ModelBuilder import ModelBuilder
 from keras.models import load_model
 
+
 class Multivariate:
     @staticmethod
     def multivariate_multiple_output_parallel_series(model_name, train, test):

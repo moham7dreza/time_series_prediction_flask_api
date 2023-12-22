@@ -95,7 +95,8 @@ class DataLoader:
         return dataset
 
     @staticmethod
-    def train_test_split(dataset, test_size=Config.n_steps):
+    def train_test_split(dataset, test_size=Config.getNSteps()):
+        print('test size is', test_size)
         index = -test_size - 1
         train = dataset[:index]
         test = dataset[index:-1]
