@@ -1,10 +1,8 @@
 import io
 import os
-
 import pandas as pd
 # from google.colab import files
 from numpy import hstack
-
 from src.Config.Config import Config
 from src.Helper.Helper import Helper
 
@@ -40,7 +38,7 @@ class DataLoader:
 
     @staticmethod
     def read_csv_files_from_local():
-        folder_path = './iran_stock'
+        folder_path = Config.local_csv_folder_path
         # Get a list of all CSV files in the folder
         csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv')]
 

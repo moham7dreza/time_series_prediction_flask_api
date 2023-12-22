@@ -1,8 +1,10 @@
-from pandora.Config.Config import Config
-from pandora.Data.DataSampler import DataSampler
-from pandora.Helper.Helper import Helper
-from pandora.Model.ModelBuilder import ModelBuilder
 import os
+
+from src.Config.Config import Config
+from src.Data.DataSampler import DataSampler
+from src.Helper.Helper import Helper
+from src.Model.ModelBuilder import ModelBuilder
+from keras.models import load_model
 
 class Multivariate:
     @staticmethod
@@ -16,8 +18,10 @@ class Multivariate:
         y_outputs = [y[:, i].reshape((y.shape[0], 1)) for i in range(n_features)]
 
         # Define the path for saving/loading the model
-        model_path = Config.drive_model_folder_path + '/{}.h5'.format('M-' + model_name)
-
+        if Config.colab:
+            model_path = Config.drive_model_folder_path + '/{}.h5'.format('M-' + model_name)
+        else:
+            model_path = Config.local_model_folder_path + '/{}.h5'.format('M-' + model_name)
         # Check if the model file exists
         if os.path.exists(model_path):
             # Load the existing model

@@ -1,6 +1,5 @@
 from numpy import array
-
-from pandora.Config.Config import Config
+from src.Config.Config import Config
 
 
 class DataSampler:

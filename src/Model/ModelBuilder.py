@@ -1,7 +1,7 @@
 from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidirectional, GRU, Dropout, SimpleRNN
 from keras.models import Model
 
-from pandora.Config.Config import Config
+from src.Config.Config import Config
 
 
 class ModelBuilder:

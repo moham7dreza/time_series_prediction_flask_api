@@ -1,7 +1,7 @@
-from pandora.Config.Config import Config
-from pandora.Data.DataLoader import DataLoader
-from pandora.Series.Multivariate import Multivariate
-from pandora.Series.Univariate import Univariate
+from src.Config.Config import Config
+from src.Data.DataLoader import DataLoader
+from src.Series.Multivariate import Multivariate
+from src.Series.Univariate import Univariate
 
 
 class Runner:

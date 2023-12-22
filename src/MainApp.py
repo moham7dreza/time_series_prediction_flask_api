@@ -1,19 +1,11 @@
 import pandas as pd
-
-from pandora.Config.Config import Config
-from pandora.Data.DataLoader import DataLoader
-from pandora.Series.Multivariate import Multivariate
-from pandora.Plot.ResultPlotter import ResultPlotter
-from pandora.Runner import Runner
-from pandora.Series.Univariate import Univariate
-
-from google.colab import drive
+from src.Config.Config import Config
+from src.Data.DataLoader import DataLoader
+from src.Plot.ResultPlotter import ResultPlotter
+from src.Runner import Runner
 
 
 class MainApp:
-    def __init__(self):
-        drive.mount('/content/drive')
-
     @staticmethod
     def run_and_plot(title, dataset, multivariates):
         # 10. run algorithms on univariate dollar

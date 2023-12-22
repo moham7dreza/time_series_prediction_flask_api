@@ -7,14 +7,15 @@ class Config:
     date_col = "<DTYYYYMMDD>"
     start_date = '2017-06-10'
     end_date = '2022-12-03'
+    n_steps = None
     epochs_for_multivariate_series = 100
     epochs_for_univariate_series = 100
-    n_steps = 3
     dropout_rate = 0.2
     prediction_col = '<CLOSE>'
-    local_csv_folder_path = '../../iran_stock'
+    local_csv_folder_path = './iran_stock'
     drive_csv_folder_path = '/content/drive/My Drive/iran_stock'
     drive_model_folder_path = '/content/drive/My Drive/time_series_models'
+    local_model_folder_path = './time_series_models'
     # 1. set csv dataset file names
     dollar_file_name = 'dollar_tjgu_from_2012.csv'
     car_file_name = 'Iran.Khodro_from_2001.csv'
@@ -53,6 +54,7 @@ class Config:
     # series type
     univariate = 'univariate'
     multivariate = 'multivariate'
+    series_name = [univariate, multivariate]
     base_project_path = os.path.abspath(os.path.dirname(__file__))
     plot_labels = ['M-CNN', 'U-CNN',
                    'M-B-LSTM', 'U-B-LSTM', 'M-LSTM', 'U-LSTM',
