@@ -1,8 +1,11 @@
+import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
+from src.Helper.Helper import Helper
 from src.Runner import Runner
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -61,20 +64,35 @@ def make_prediction():
     # Config.setNSteps(requests.get('n_steps'))
     # requested_datasets = requests.get('datasets')
     requested_datasets = [Config.Dollar]
-    requested_models = requests.get('models')
-    requested_series = requests.get('series')
+    # requested_models = requests.get('models')
+    requested_models = [Config.CNN]
+    # requested_series = requests.get('series')
+    requested_series = [Config.multivariate]
 
     datasets = DataLoader.get_datasets()
+    if Config.multivariate in requested_series:
+        multivariates = Runner.run_for_multivariate_series_ir(datasets)
     results = {}
-    for dataset_name in requested_datasets:
-        # print(dataset_name)
-        univariates = Runner.run_for_univariate_series_ir(datasets[dataset_name])
-        results[dataset_name] = univariates
+    for title, dataset in datasets.items():
+        results[title] = {}
+        if title in requested_datasets:
+            if Config.univariate in requested_series:
+                results[title][Config.univariate] = Runner.run_for_univariate_series_ir(dataset)
+            else:
+                results[title][Config.univariate] = None
+            if Config.multivariate in requested_series:
+                results[title][Config.multivariate] = multivariates[title]
+            else:
+                results[title][Config.multivariate] = None
+        else:
+            results[title][Config.univariate] = None
+            results[title][Config.multivariate] = None
 
+    print()
     return jsonify(
         {
             'status': 'ok',
-            'data': results
+            'data': Helper.convert_to_python_float(results)
         }
     )
 
