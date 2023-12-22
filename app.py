@@ -1,9 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import os
-
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
+from src.Runner import Runner
 
 app = Flask(__name__)
 CORS(app)
@@ -41,6 +40,39 @@ def get_datasets_name():
         {
             'status': 'OK',
             'data': Config.datasets_name
+        }
+    )
+
+
+@app.route('/series-name')
+def get_series_name():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': Config.series_name
+        }
+    )
+
+
+@app.route('/make-prediction', methods=['POST'])
+def make_prediction():
+    requests = request.get_json()
+
+    Config.n_steps = requests.n_steps
+    requested_datasets = requests.datasets
+    requested_models = requests.models
+    requested_series = requests.series
+
+    datasets = DataLoader.get_datasets()
+    results = {}
+    for dataset_name in requested_datasets:
+        univariates = Runner.run_for_univariate_series_ir(datasets[dataset_name])
+        results[dataset_name] = univariates
+
+    return jsonify(
+        {
+            'status': 'ok',
+            'data': results
         }
     )
 
