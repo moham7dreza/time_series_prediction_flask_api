@@ -46,7 +46,7 @@ class Univariate:
         return yhat
 
     @staticmethod
-    def splitted_univariate_series(model_name, dataset, scaler):
+    def splitted_univariate_series(model_name, dataset, scaler, dates):
         # split into samples
         X, y = DataSampler.split_sequences(Config.univariate, dataset)
         # reshape from [samples, timesteps] into [samples, timesteps, features]
@@ -96,7 +96,16 @@ class Univariate:
         print(f"Train RMSE: {train_rmse}")
         print(f"Test RMSE: {test_rmse}")
 
-        return {
-            'actual': Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
-            'predictions': Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
-        }
+        actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
+        predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
+
+        # Check if all arrays have the same length
+        if len(dates) == len(actuals) == len(predictions):
+            # Create the mapping
+            data_mapping = {
+                index + 1: {"date": date, "actual": actual, "predict": predict}
+                for index, (date, actual, predict) in enumerate(zip(dates, actuals, predictions))
+            }
+            return data_mapping
+        else:
+            raise ValueError("Arrays must have the same length.")

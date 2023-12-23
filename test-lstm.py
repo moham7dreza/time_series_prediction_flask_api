@@ -104,3 +104,39 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.show()
 
+from sklearn.preprocessing import MinMaxScaler
+
+def run_for_univariate_series_ir_spiltted(dataset, models):
+    dataset = dataset[Config.prediction_col].values.reshape(-1, 1)
+
+    # Normalize the data
+    scaler = MinMaxScaler(feature_range=(0, 1))
+    dataset = scaler.fit_transform(dataset)
+
+    results = {}
+
+    for model_name, model_config in models.items():
+        model_result = Univariate.splitted_univariate_series(model_config, dataset, scaler)
+        results[model_name] = model_result
+
+    return results
+
+# Example usage:
+models_to_run = {
+    'U-' + Config.CNN: Config.CNN,
+    'U-' + Config.LSTM: Config.LSTM,
+    'U-' + Config.bi_LSTM: Config.bi_LSTM,
+    'U-' + Config.GRU: Config.GRU,
+    'U-' + Config.bi_GRU: Config.bi_GRU,
+    'U-' + Config.ANN: Config.ANN,
+    'U-' + Config.bi_ANN: Config.bi_ANN,
+    'U-' + Config.RNN: Config.RNN,
+    'U-' + Config.bi_RNN: Config.bi_RNN,
+}
+
+results = run_for_univariate_series_ir_spiltted(your_dataset, models=models_to_run)
+
+# Access individual model results
+print(results['U-' + Config.CNN])
+print(results['U-' + Config.LSTM])
+# ... and so on

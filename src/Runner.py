@@ -35,34 +35,19 @@ class Runner:
         }
 
     @staticmethod
-    def run_for_univariate_series_ir_spiltted(dataset):
+    def run_for_univariate_series_ir_spiltted(dataset, models):
+        dates = dataset.index.tolist()
         dataset = dataset[Config.prediction_col].values.reshape(-1, 1)
         from sklearn.preprocessing import MinMaxScaler
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         dataset = scaler.fit_transform(dataset)
 
-        u_cnn = Univariate.splitted_univariate_series(Config.CNN, dataset, scaler)
-        u_lstm = Univariate.splitted_univariate_series(Config.LSTM, dataset, scaler)
-        u_b_lstm = Univariate.splitted_univariate_series(Config.bi_LSTM, dataset, scaler)
-        u_gru = Univariate.splitted_univariate_series(Config.GRU, dataset, scaler)
-        u_b_gru = Univariate.splitted_univariate_series(Config.bi_GRU, dataset, scaler)
-        u_ann = Univariate.splitted_univariate_series(Config.ANN, dataset, scaler)
-        u_b_ann = Univariate.splitted_univariate_series(Config.bi_ANN, dataset, scaler)
-        u_rnn = Univariate.splitted_univariate_series(Config.RNN, dataset, scaler)
-        u_b_rnn = Univariate.splitted_univariate_series(Config.bi_RNN, dataset, scaler)
+        results = {}
+        for model in models:
+            results[model] = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
 
-        return {
-            'U-' + Config.CNN: u_cnn,
-            'U-' + Config.LSTM: u_lstm,
-            'U-' + Config.bi_LSTM: u_b_lstm,
-            'U-' + Config.GRU: u_gru,
-            'U-' + Config.bi_GRU: u_b_gru,
-            'U-' + Config.ANN: u_ann,
-            'U-' + Config.bi_ANN: u_b_ann,
-            'U-' + Config.RNN: u_rnn,
-            'U-' + Config.bi_RNN: u_b_rnn,
-        }
+        return results
 
     @staticmethod
     def run_for_multivariate_series_ir(datasets):

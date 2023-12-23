@@ -62,13 +62,11 @@ def make_prediction():
     requests = request.get_json()
 
     Config.setNSteps(requests.get('n_steps'))
-    requested_datasets = requests.get('datasets')
-    requested_models = requests.get('models')
-    requested_series = requests.get('series')
+    requested_datasets = requests.get('dataset')
+    requested_models = requests.get('model')
+    requested_series = requests.get('serie')
 
     datasets = DataLoader.get_datasets()
-
-    print(Runner.run_for_univariate_series_ir_spiltted(datasets[Config.Dollar]))
 
     if Config.multivariate in requested_series:
         multivariates = Runner.run_for_multivariate_series_ir(datasets)
@@ -77,7 +75,7 @@ def make_prediction():
         results[title] = {}
         if title in requested_datasets:
             if Config.univariate in requested_series:
-                results[title][Config.univariate] = Runner.run_for_univariate_series_ir(dataset)
+                results[title][Config.univariate] = Runner.run_for_univariate_series_ir_spiltted(dataset, requested_models)
             else:
                 results[title][Config.univariate] = None
             if Config.multivariate in requested_series:
