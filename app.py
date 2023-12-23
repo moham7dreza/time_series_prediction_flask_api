@@ -67,6 +67,9 @@ def make_prediction():
     requested_series = requests.get('series')
 
     datasets = DataLoader.get_datasets()
+
+    print(Runner.run_for_univariate_series_ir_spiltted(datasets[Config.Dollar]))
+
     if Config.multivariate in requested_series:
         multivariates = Runner.run_for_multivariate_series_ir(datasets)
     results = {}

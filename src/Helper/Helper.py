@@ -17,3 +17,15 @@ class Helper:
         elif isinstance(obj, dict):
             return {key: Helper.convert_to_python_float(value) for key, value in obj.items()}
         return obj
+
+    @staticmethod
+    def merge_and_clean(round_decimals=None, **arrays):
+        # Round each array if round_decimals is specified
+        rounded_arrays = [np.round(arr, decimals=round_decimals) if round_decimals is not None else arr for arr in
+                          arrays.values()]
+
+        # Concatenate the rounded arrays
+        concatenated_array = np.concatenate(rounded_arrays).ravel()
+
+        # Convert to a Python list
+        return concatenated_array.tolist()

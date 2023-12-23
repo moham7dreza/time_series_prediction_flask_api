@@ -62,6 +62,7 @@ class Config:
                    'M-ANN', 'U-ANN', 'M-B-ANN', 'U-N-ANN',
                    'M-RNN', 'U-RNN', 'M-B-RNN', 'U-N-RNN',
                    'REAL']
+    checkForModelExistsInFolder = True
 
     @staticmethod
     def setNSteps(n_steps):
