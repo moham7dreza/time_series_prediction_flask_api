@@ -5,7 +5,6 @@ from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Helper.Helper import Helper
 from src.Runner import Runner
-import json
 
 app = Flask(__name__)
 CORS(app)
@@ -70,6 +69,7 @@ def make_prediction():
 
     if Config.multivariate in requested_series:
         multivariates = Runner.run_for_multivariate_series_ir(datasets)
+        # multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
     results = {}
     for title, dataset in datasets.items():
         results[title] = {}
@@ -86,7 +86,6 @@ def make_prediction():
             results[title][Config.univariate] = None
             results[title][Config.multivariate] = None
 
-    print()
     return jsonify(
         {
             'status': 'ok',

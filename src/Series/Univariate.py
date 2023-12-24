@@ -53,7 +53,7 @@ class Univariate:
         n_features = 1
         X = X.reshape((X.shape[0], X.shape[1], n_features))
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size, random_state=Config.random_state)
 
         # Define the path for saving/loading the model
         if Config.colab:

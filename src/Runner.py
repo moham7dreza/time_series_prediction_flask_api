@@ -2,6 +2,7 @@ from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Series.Multivariate import Multivariate
 from src.Series.Univariate import Univariate
+from sklearn.preprocessing import MinMaxScaler
 
 
 class Runner:
@@ -38,7 +39,7 @@ class Runner:
     def run_for_univariate_series_ir_spiltted(dataset, models):
         dates = dataset.index.tolist()
         dataset = dataset[Config.prediction_col].values.reshape(-1, 1)
-        from sklearn.preprocessing import MinMaxScaler
+
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         dataset = scaler.fit_transform(dataset)
@@ -46,6 +47,24 @@ class Runner:
         results = {}
         for model in models:
             results[model] = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
+
+        return results
+
+    @staticmethod
+    def run_for_multivariate_series_ir_spiltted(datasets, models):
+        # Normalize the data
+        scaler = MinMaxScaler(feature_range=(0, 1))
+
+        dataset, scaler = DataLoader.stack_datasets_splitted(datasets, scaler)
+
+        dates = datasets[Config.Dollar].index.tolist()
+
+        titles = list(datasets.keys())
+        results = {}
+        for i in range(len(titles)):
+            results[titles[i]] = {}
+            for model in models:
+                results[titles[i]][model] = Multivariate.splitted_multivariate_series(model, dataset, scaler, dates)
 
         return results
 

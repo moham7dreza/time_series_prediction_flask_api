@@ -63,6 +63,8 @@ class Config:
                    'M-RNN', 'U-RNN', 'M-B-RNN', 'U-N-RNN',
                    'REAL']
     checkForModelExistsInFolder = True
+    test_size = 0.2
+    random_state = 42
 
     @staticmethod
     def setNSteps(n_steps):
