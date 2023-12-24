@@ -68,8 +68,8 @@ def make_prediction():
     datasets = DataLoader.get_datasets()
 
     if Config.multivariate in requested_series:
-        multivariates = Runner.run_for_multivariate_series_ir(datasets)
-        # multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
+        # multivariates = Runner.run_for_multivariate_series_ir(datasets)
+        multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
     results = {}
     for title, dataset in datasets.items():
         results[title] = {}

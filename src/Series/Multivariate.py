@@ -93,15 +93,10 @@ class Multivariate:
         # print('eval : ', np.array(train_predictions).shape, np.array(test_predictions).shape)  # (5, 227, 1) (5,
         # 57, 1)
 
-        train_predictions = np.array(train_predictions).squeeze()
-        y_train = np.array(y_train).squeeze()
-        test_predictions = np.array(test_predictions).squeeze()
-        y_test = np.array(y_test).squeeze()
-
         # Transform predictions back to original scale
-        train_predictions = scaler.inverse_transform(train_predictions)
+        train_predictions = np.concatenate([scaler.inverse_transform(pred) for pred in train_predictions], axis=1)
         y_train = scaler.inverse_transform(y_train)
-        test_predictions = scaler.inverse_transform(test_predictions)
+        test_predictions = np.concatenate([scaler.inverse_transform(pred) for pred in test_predictions], axis=1)
         y_test = scaler.inverse_transform(y_test)
 
         # Calculate errors
