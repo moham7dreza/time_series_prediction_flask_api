@@ -395,7 +395,7 @@
 # print("Actuals:")
 # print(y_test)
 #
-
+from src.Helper.Helper import Helper
 
 if __name__ == '__main__':
     from sklearn.model_selection import train_test_split
@@ -409,23 +409,33 @@ if __name__ == '__main__':
 
     # Generate a synthetic dataset
     X = np.random.rand(10, 3, 5)  # 100 samples, 3 features
-    y = np.random.rand(10, 5)  # 100 samples, 2 features
+    X2 = np.random.rand(10, 3, 5)  # 100 samples, 3 features
+    y = np.random.rand(2, 5).tolist()  # 100 samples, 2 features
+    y2 = np.random.rand(2, 5).tolist()  # 100 samples, 2 features
+    print(y, y2)
+    X = Helper.merge_and_clean(2, arr1=y, arr2=y2)
+    print(X)
+    data_mapping = {
+        index + 1: {"x": x, "y": y}
+        for index, (x, y) in enumerate(zip(X, y))
+    }
+    print(data_mapping)
     # y = (X[:, 0] + X[:, 1] > 1).astype(int)  # Binary classification task
-    print('x : ', X)
-    print('x sh: ', X.shape)
-    print('y : ', y)
-    print('y sh: ', y.shape)
+    # print('x : ', X)
+    # print('x sh: ', X.shape)
+    # print('y : ', y)
+    # print('y sh: ', y.shape)
     # Split the dataset into training and testing sets
     # The test_size parameter specifies the proportion of the dataset to include in the test split.
     # The random_state parameter ensures reproducibility by fixing the random seed.
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    print('X_train : ', X_train)
-    print('X_train sh: ', X_train.shape)
-    print('X_test : ', X_test)
-    print('X_test sh: ', X_test.shape)
-    print('y_train : ', y_train)
-    print('y_train sh: ', y_train.shape)
-    print('y_test : ', y_test)
-    print('y_test sh: ', y_test.shape)
+    # print('X_train : ', X_train)
+    # print('X_train sh: ', X_train.shape)
+    # print('X_test : ', X_test)
+    # print('X_test sh: ', X_test.shape)
+    # print('y_train : ', y_train)
+    # print('y_train sh: ', y_train.shape)
+    # print('y_test : ', y_test)
+    # print('y_test sh: ', y_test.shape)
     # Now, X_train and y_train contain the training data, and X_test and y_test contain the testing data.
     # You can use these datasets to train and evaluate your machine learning model.

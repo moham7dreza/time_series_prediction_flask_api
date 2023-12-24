@@ -66,6 +66,12 @@ class Config:
     test_size = 0.2
     random_state = 42
 
+    Close = '<CLOSE>'
+    High = '<HIGH>'
+    Open = '<OPEN>'
+    Low = '<LOW>'
+    prices_name = [Close, High, Open, Low]
+
     @staticmethod
     def setNSteps(n_steps):
         Config.n_steps = n_steps

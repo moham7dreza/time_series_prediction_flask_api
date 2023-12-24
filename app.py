@@ -36,6 +36,16 @@ def get_models_name():
     )
 
 
+@app.route('/prices-name')
+def get_prices_name():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': Config.prices_name
+        }
+    )
+
+
 @app.route('/datasets-name')
 def get_datasets_name():
     return jsonify(
@@ -64,18 +74,21 @@ def make_prediction():
     requested_datasets = requests.get('dataset')
     requested_models = requests.get('model')
     requested_series = requests.get('serie')
+    requested_prices = requests.get('price')
 
     datasets = DataLoader.get_datasets()
 
     if Config.multivariate in requested_series:
-        # multivariates = Runner.run_for_multivariate_series_ir(datasets)
-        multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
+        multivariates = Runner.run_for_multivariate_series_ir(datasets)
+        # multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
     results = {}
     for title, dataset in datasets.items():
         results[title] = {}
         if title in requested_datasets:
             if Config.univariate in requested_series:
-                results[title][Config.univariate] = Runner.run_for_univariate_series_ir_spiltted(dataset, requested_models)
+                results[title][Config.univariate] = Runner.run_for_univariate_series_ir_spiltted(dataset,
+                                                                                                 requested_models,
+                                                                                                 requested_prices)
             else:
                 results[title][Config.univariate] = None
             if Config.multivariate in requested_series:
