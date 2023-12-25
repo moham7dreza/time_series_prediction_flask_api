@@ -47,14 +47,18 @@ class Univariate:
 
     @staticmethod
     def splitted_univariate_series(model_name, dataset, scaler, dates):
+        # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
         # split into samples
         X, y = DataSampler.split_sequences(Config.univariate, dataset)
+        # print(X.shape, y.shape)  # (284, 3, 1) (284, 1)
+
         # reshape from [samples, timesteps] into [samples, timesteps, features]
         n_features = 1
         X = X.reshape((X.shape[0], X.shape[1], n_features))
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size, random_state=Config.random_state)
-
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size,
+                                                            random_state=Config.random_state)
+        # print(X_train.shape, X_test.shape, y_train.shape, y_test.shape,)  # (227, 3, 1) (57, 3, 1) (227, 1) (57, 1)
         # Define the path for saving/loading the model
         if Config.colab:
             model_path = Config.drive_model_folder_path + '/{}.h5'.format('U-' + model_name)
@@ -77,7 +81,7 @@ class Univariate:
             print("Model '{}' saved to file.".format('U-' + model_name))
 
         loss = model.evaluate(X_test, y_test)
-        print("Model '{}' loss is : .".format('U-' + model_name), loss)
+        print("Model '{}' loss is : ".format('U-' + model_name), loss)
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
@@ -98,7 +102,7 @@ class Univariate:
 
         actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
         predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
-
+        print(len(dates), len(actuals[0]), len(predictions))
         # # Check if all arrays have the same length
         # if len(dates) == len(actuals) == len(predictions):
         #     # Create the mapping

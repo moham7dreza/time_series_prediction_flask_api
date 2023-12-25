@@ -40,31 +40,32 @@ class Runner:
     @staticmethod
     def run_for_univariate_series_ir_spiltted(dataset, models, prices):
 
-        data_mapping = {
-            date: {Config.Low: low, Config.High: high, Config.Open: open, Config.Close: close}
-            for date, low, high, open, close in
-            zip(dataset.index, dataset[Config.Low].values.reshape(-1, 1), dataset[Config.High].values.reshape(-1, 1),
-                dataset[Config.Open].values.reshape(-1, 1), dataset[Config.Close].values.reshape(-1, 1))
-        }
+        # data_mapping = {
+        #     date: {Config.Low: low, Config.High: high, Config.Open: open, Config.Close: close}
+        #     for date, low, high, open, close in
+        #     zip(dataset.index, dataset[Config.Low].values.reshape(-1, 1), dataset[Config.High].values.reshape(-1, 1),
+        #         dataset[Config.Open].values.reshape(-1, 1), dataset[Config.Close].values.reshape(-1, 1))
+        # }
 
         # dynmiced
-        # data_mapping = {
-        #     date: {col: value for col, value in zip(prices, row)}
-        #     for date, *row in zip(dataset.index, *map(lambda col: dataset[col].values.reshape(-1, 1), prices))
-        # }
-        # print(data_mapping)
+        data_mapping = {
+            date: {col: value for col, value in zip(prices, row)}
+            for date, *row in zip(dataset.index, *map(lambda col: dataset[col].values.reshape(-1, 1), prices))
+        }
+        # print(len(data_mapping))  # 287
 
-        dates = dataset.index.tolist()
-        dataset = dataset[Config.prediction_col].values.reshape(-1, 1)
+        # dates = dataset.index.tolist()
+        # dataset = dataset[Config.prediction_col].values.reshape(-1, 1)
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
-        dataset = scaler.fit_transform(dataset)
 
         results = {}
         for model in models:
             results[model] = {}
             for price in prices:
                 dataset = [entry[price] for entry in data_mapping.values()]
+                dataset = scaler.fit_transform(dataset)
+                dates = list(data_mapping.keys())[:len(dataset) - int(Config.n_steps)]
                 results[model][price] = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
 
         return results
