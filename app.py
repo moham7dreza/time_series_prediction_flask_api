@@ -4,6 +4,7 @@ from flask_cors import CORS
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Helper.Helper import Helper
+from src.Responses.PredictResponse import PredictResponse
 from src.Runner import Runner
 
 app = Flask(__name__)
@@ -78,26 +79,7 @@ def make_prediction():
 
     datasets = DataLoader.get_datasets()
 
-    if Config.multivariate in requested_series:
-        multivariates = Runner.run_for_multivariate_series_ir(datasets)
-        # multivariates = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models)
-    results = {}
-    for title, dataset in datasets.items():
-        results[title] = {}
-        if title in requested_datasets:
-            if Config.univariate in requested_series:
-                results[title][Config.univariate] = Runner.run_for_univariate_series_ir_spiltted(dataset,
-                                                                                                 requested_models,
-                                                                                                 requested_prices)
-            else:
-                results[title][Config.univariate] = None
-            if Config.multivariate in requested_series:
-                results[title][Config.multivariate] = multivariates[title]
-            else:
-                results[title][Config.multivariate] = None
-        else:
-            results[title][Config.univariate] = None
-            results[title][Config.multivariate] = None
+    results = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series)
 
     return jsonify(
         {

@@ -71,6 +71,30 @@ class Runner:
         return results
 
     @staticmethod
+    def run_for_univariate_series_ir_spiltted_price(dataset, models, price):
+        scaler = MinMaxScaler(feature_range=(0, 1))
+
+        dates = dataset.index[:len(dataset) - int(Config.n_steps)]
+        dataset = dataset[price].values.reshape(-1, 1)
+        dataset = scaler.fit_transform(dataset)
+
+        results = {'labels': list(dates), 'datasets': {}}
+        for model in models:
+            actuals, predictions = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
+            # actual = {
+            #     index: {"date": data["date"], "actual": data["actual"]}
+            #     for index, data in data_mapping.items()
+            # }
+            # predict = {
+            #     index: {"date": data["date"], "predict": data["predict"]}
+            #     for index, data in data_mapping.items()
+            # }
+            results['datasets']['U-' + model + '-Actual'] = actuals
+            results['datasets']['U-' + model + '-Predict'] = predictions
+
+        return results
+
+    @staticmethod
     def run_for_multivariate_series_ir_spiltted(datasets, models):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))

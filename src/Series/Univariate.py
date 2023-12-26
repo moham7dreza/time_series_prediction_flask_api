@@ -102,7 +102,7 @@ class Univariate:
 
         actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
         predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
-        print(len(dates), len(actuals[0]), len(predictions))
+        # print(len(dates), len(actuals[0]), len(predictions))
         # # Check if all arrays have the same length
         # if len(dates) == len(actuals) == len(predictions):
         #     # Create the mapping
@@ -115,8 +115,9 @@ class Univariate:
         #     raise ValueError("Arrays must have the same length.")
 
         # Create the mapping
-        data_mapping = {
-            index + 1: {"date": date, "actual": actual, "predict": predict}
-            for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
-        }
-        return data_mapping
+        # return {
+        #     index + 1: {"date": date, "actual": actual, "predict": predict}
+        #     for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
+        # }
+
+        return actuals[0], predictions
