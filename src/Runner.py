@@ -99,16 +99,22 @@ class Runner:
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
 
-        dataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
+        stackedDataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
 
-        dates = datasets[Config.Dollar].index[:len(dataset) - int(Config.n_steps)].tolist()
-        # print(dataset, dates)
-        titles = list(datasets.keys())
-        results = {}
-        for i in range(len(titles)):
-            results[titles[i]] = {}
+        dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
+        datasetTitles = list(datasets.keys())
+        flag = True
+        for title in datasetTitles:
+            label = title + '-' + price
+            if results[label] is None:
+                results[label] = {'labels': list(dates), 'datasets': {}}
+            run = None
             for model in models:
-                results[titles[i]][model] = Multivariate.splitted_multivariate_series(model, dataset, scaler, dates)
+                if flag:
+                    run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
+                results[label]['datasets']['M-' + model + 'Actual'] = run[title]['actual']
+                results[label]['datasets']['M-' + model + 'Predict'] = run[title]['predict']
+            flag = False
 
         return results
 

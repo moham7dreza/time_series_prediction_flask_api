@@ -47,7 +47,7 @@ class Multivariate:
         return yhat
 
     @staticmethod
-    def splitted_multivariate_series(model_name, dataset, scaler, dates):
+    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles):
         # print(type(dates))  # <class 'list'>
         # convert into input/output
         X, y = DataSampler.split_sequences(Config.multivariate, dataset)
@@ -121,8 +121,9 @@ class Multivariate:
         # Sum the arrays element-wise at the same index
         predictions = [np.concatenate(eachDatasetPrediction) for eachDatasetPrediction in
                        zip(train_predictions, test_predictions)]
+        predictions = np.round(np.squeeze(predictions), 2)
         actuals = np.round(np.concatenate((y_train, y_test)), 2)
-        # print(actuals.shape)  # (284, 5)
+        print(actuals.shape, predictions.shape)  # (284, 5)
         # print(type(predictions), type(actuals))  # <class 'list'> <class 'numpy.ndarray'>
         # actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
         # predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
@@ -140,3 +141,7 @@ class Multivariate:
         #     return data_mapping
         # else:
         #     raise ValueError("Arrays must have the same length.")
+        return {
+            title: {"actual": actual, "predict": predict}
+            for title, actual, predict in zip(titles, actuals, predictions)
+        }
