@@ -59,11 +59,11 @@ class DataLoader:
         return hstack([seq.reshape(len(seq), 1) for seq in sequences])
 
     @staticmethod
-    def stack_datasets_splitted(datasets, scaler, col=Config.prediction_col):
+    def stack_datasets_splitted(datasets, price, scaler):
         sequences = []
         for dataset in list(datasets.values()):
-            seq = dataset[col].values.reshape(-1, 1)
-            seq = scaler.fit_transform(seq)
+            seq = dataset[price].values
+            # seq = scaler.fit_transform(seq)
             sequences.append(seq)
             # print(len(seq))
         return hstack([seq.reshape(len(seq), 1) for seq in sequences]), scaler

@@ -95,14 +95,14 @@ class Runner:
         return results
 
     @staticmethod
-    def run_for_multivariate_series_ir_spiltted(datasets, models):
+    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
 
-        dataset, scaler = DataLoader.stack_datasets_splitted(datasets, scaler)
+        dataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
 
-        dates = datasets[Config.Dollar].index.tolist()
-
+        dates = datasets[Config.Dollar].index[:len(dataset) - int(Config.n_steps)].tolist()
+        # print(dataset, dates)
         titles = list(datasets.keys())
         results = {}
         for i in range(len(titles)):
