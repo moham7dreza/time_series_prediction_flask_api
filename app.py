@@ -1,14 +1,19 @@
-import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Helper.Helper import Helper
+from src.Migrations import db
 from src.Responses.PredictResponse import PredictResponse
-from src.Runner import Runner
+from src.Config.app import Config as appConfig
+from src.Services import PredictService
 
 app = Flask(__name__)
 CORS(app)
+app.config.from_object(appConfig)
+db.init_app(app)
 
 
 @app.route('/datasets')
@@ -69,6 +74,7 @@ def get_series_name():
 
 @app.route('/make-prediction', methods=['POST'])
 def make_prediction():
+    print(Predict.query.all())
     requests = request.get_json()
 
     Config.setNSteps(requests.get('n_steps'))
@@ -79,7 +85,8 @@ def make_prediction():
 
     datasets = DataLoader.get_datasets()
 
-    results = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series)
+    results = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
+                                             requested_series)
 
     return jsonify(
         {
@@ -90,4 +97,6 @@ def make_prediction():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
