@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from src.Config.Config import Config
@@ -14,6 +15,7 @@ app = Flask(__name__)
 CORS(app)
 app.config.from_object(appConfig)
 db.init_app(app)
+migrate = Migrate(app, db)
 
 
 @app.route('/datasets')
@@ -74,7 +76,7 @@ def get_series_name():
 
 @app.route('/make-prediction', methods=['POST'])
 def make_prediction():
-    print(Predict.query.all())
+    print(PredictService.index())
     requests = request.get_json()
 
     Config.setNSteps(requests.get('n_steps'))
