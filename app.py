@@ -18,6 +18,16 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
+@app.route('/')
+def main():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': None
+        }
+    )
+
+
 @app.route('/datasets')
 def get_datasets():
     datasets = DataLoader.get_datasets()
