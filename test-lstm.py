@@ -410,7 +410,9 @@ if __name__ == '__main__':
     # Generate a synthetic dataset
     X = np.round(np.random.rand(10, 3, 5), 2)  # 100 samples, 3 features
     # X2 = np.random.rand(10, 3, 5)  # 100 samples, 3 features
-    y = np.round(np.random.rand(10, 5), 2)  # 100 samples, 2 features
+    y = np.round(np.random.rand(10, 5), 2)
+    y_outputs = [y[:, i].reshape((y.shape[0], 1)) for i in range(5)]
+    # 100 samples, 2 features
     # y2 = np.random.rand(2, 5).tolist()  # 100 samples, 2 features
     # print(y, y2)
     # X = Helper.merge_and_clean(2, arr1=y, arr2=y2)
@@ -425,10 +427,13 @@ if __name__ == '__main__':
     print('x sh: ', X.shape)
     print('y : ', y)
     print('y sh: ', y.shape)
+    print('y out : ', np.array(y_outputs))
+    print('x sh: ', X.shape)
+    print('y out sh: ', np.array(y_outputs).shape)
     # Split the dataset into training and testing sets
     # The test_size parameter specifies the proportion of the dataset to include in the test split.
     # The random_state parameter ensures reproducibility by fixing the random seed.
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, np.squeeze(y_outputs), test_size=0.2, shuffle=False, random_state=42)
     print('X_train : ', X_train)
     print('X_train sh: ', X_train.shape)
     print('X_test : ', X_test)

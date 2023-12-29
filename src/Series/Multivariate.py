@@ -95,13 +95,16 @@ class Multivariate:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model
-            model.fit(X, y, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
 
             # Save the model
             model.save(model_path)
             print("Model '{}' saved to file.".format('M-' + model_name))
         print("------------------------------------------------------")
-        loss = model.evaluate(X_test, y_test)
+        y_test_outputs = [y_test[:, i].reshape((y_test.shape[0], 1)) for i in range(n_features)]
+        print('y_test_outputs shape and type : ', np.array(y_test_outputs).shape, type(y_test_outputs))  # (5, 284, 1)
+        print('y_test_outputs : ', np.array(y_test_outputs))
+        loss = model.evaluate(X_test, y_test_outputs)
         print("Model '{}' loss is : ".format('M-' + model_name), loss)
         print("------------------------------------------------------")
         # Evaluate the model
@@ -140,7 +143,9 @@ class Multivariate:
         predictions = [np.concatenate(eachDatasetPrediction) for eachDatasetPrediction in
                        zip(train_predictions, test_predictions)]
         predictions = np.round(np.squeeze(predictions), 2)
-        actuals = np.round(np.concatenate((y_train, y_test)), 2)
+        actuals = np.concatenate((y_train, y_test))
+        actuals = [actuals[:, i].reshape((actuals.shape[0], 1)) for i in range(n_features)]
+        actuals = np.round(np.squeeze(actuals), 2)
         print("actuals and predictions type : ", type(actuals),
               type(predictions))  # <class 'list'> <class 'numpy.ndarray'>
         print("actuals and predictions shape : ", actuals.shape, predictions.shape)  # (284, 5)
