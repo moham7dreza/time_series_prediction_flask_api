@@ -1,4 +1,5 @@
 import numpy as np
+from flask import jsonify
 
 
 class Helper:
@@ -29,3 +30,14 @@ class Helper:
 
         # Convert to a Python list
         return concatenated_array.tolist()
+
+    @staticmethod
+    def failed_response(method, msg):
+        if method != 'POST':
+            return jsonify(
+                {
+                    'status': 'ok',
+                    'message': 'invalid request method'
+                }
+            ), 400
+

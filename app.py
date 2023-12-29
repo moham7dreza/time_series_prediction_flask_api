@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, url_for
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -23,9 +23,9 @@ def main():
     return jsonify(
         {
             'status': 'OK',
-            'data': None
+            'data': [pred.serialize() for pred in PredictService.index()]
         }
-    )
+    ), 201
 
 
 @app.route('/datasets')
@@ -86,7 +86,14 @@ def get_series_name():
 
 @app.route('/make-prediction', methods=['POST'])
 def make_prediction():
-    print(PredictService.index())
+    if request.method != 'POST':
+        return jsonify(
+            {
+                'status': 'ok',
+                'message': 'invalid request method'
+            }
+        ), 400
+
     requests = request.get_json()
 
     Config.setNSteps(requests.get('n_steps'))
@@ -94,6 +101,8 @@ def make_prediction():
     requested_models = requests.get('model')
     requested_series = requests.get('serie')
     requested_prices = requests.get('price')
+
+    PredictService.create(requests)
 
     datasets = DataLoader.get_datasets()
 
