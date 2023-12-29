@@ -6,5 +6,5 @@ class Predict(db.Model):
     series = db.Column(db.String(255), nullable=False)
     models = db.Column(db.String(255), nullable=False)
     prices = db.Column(db.String(255), nullable=False)
-    databases = db.Column(db.String(255), nullable=False)
+    datasets = db.Column(db.String(255), nullable=False)
     n_steps = db.Column(db.String(255), nullable=False)
