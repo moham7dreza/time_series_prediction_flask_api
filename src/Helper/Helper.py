@@ -41,3 +41,6 @@ class Helper:
                 }
             ), 400
 
+    @staticmethod
+    def implode(array):
+        return ', '.join([str(item) for item in array])

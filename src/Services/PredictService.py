@@ -1,3 +1,4 @@
+from src.Helper.Helper import Helper
 from src.Migrations import db
 from src.Migrations.Predict import Predict
 
@@ -7,8 +8,9 @@ class PredictionService:
         return Predict.query.all()
 
     def create(self, request):
-        pred = Predict(n_steps=request.get('n_steps'), datasets=request.get('dataset'), models=request.get('model'),
-                       prices=request.get('price'), series=request.get('serie'))
+        pred = Predict(n_steps=request.get('n_steps'), datasets=Helper.implode(request.get('dataset')),
+                       models=Helper.implode(request.get('model')),
+                       prices=Helper.implode(request.get('price')), series=Helper.implode(request.get('serie')))
         db.session.add(pred)
         db.session.commit()
         return pred
