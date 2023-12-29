@@ -80,6 +80,7 @@ class Runner:
 
         results = {'labels': list(dates), 'datasets': {}}
         for model in models:
+            # print(f'[DEBUG] - in univariate of {model}')
             actuals, predictions = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
             # actual = {
             #     index: {"date": data["date"], "actual": data["actual"]}
@@ -95,7 +96,7 @@ class Runner:
         return results
 
     @staticmethod
-    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results):
+    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
 
@@ -103,18 +104,18 @@ class Runner:
 
         dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
         datasetTitles = list(datasets.keys())
-        flag = True
-        for title in datasetTitles:
-            label = title + '-' + price
-            if results[label] is None:
-                results[label] = {'labels': list(dates), 'datasets': {}}
-            run = None
-            for model in models:
-                if flag:
-                    run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
-                results[label]['datasets']['M-' + model + 'Actual'] = run[title]['actual']
-                results[label]['datasets']['M-' + model + 'Predict'] = run[title]['predict']
-            flag = False
+
+        for model in models:
+            # print(f'[DEBUG] - in multivariate of {model}')
+            run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
+            for title in titles:
+                label = title + '-' + price
+
+                if not results.get(label, {}):
+                    results[label] = {'labels': list(dates), 'datasets': {}}
+
+                results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual']
+                results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
 
         return results
 

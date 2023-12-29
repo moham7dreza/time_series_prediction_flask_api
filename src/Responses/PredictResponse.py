@@ -30,18 +30,21 @@ class PredictResponse:
     @staticmethod
     def total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series):
         results = {}
-        oneTimeMultivariateRunFlag = True
+
         for title, dataset in datasets.items():
             for price in Config.prices_name:
                 if price in requested_prices and title in requested_datasets:
                     label = title + '-' + price
-                    results[label] = {}
+                    # print(f'[DEBUG] - label is for {price} : ', label)
+
                     if Config.univariate in requested_series:
+                        # print(f'[DEBUG] - in univariate for {label}')
                         results[label] = Runner.run_for_univariate_series_ir_spiltted_price(dataset,
                                                                                             requested_models,
                                                                                             price)
-                    if Config.multivariate in requested_series and oneTimeMultivariateRunFlag:
+                    if Config.multivariate in requested_series:
+                        # print(f'[DEBUG] - in multivariate for {label}')
                         results = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models, price,
-                                                                                 results)
-                        oneTimeMultivariateRunFlag = False
+                                                                                 results, requested_datasets)
+
         return results

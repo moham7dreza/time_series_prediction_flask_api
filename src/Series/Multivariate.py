@@ -169,6 +169,6 @@ class Multivariate:
         # else:
         #     raise ValueError("Arrays must have the same length.")
         return {
-            title: {"actual": actual, "predict": predict}
+            title: {"actual": actual.tolist(), "predict": predict.tolist()}
             for title, actual, predict in zip(titles, actuals, predictions)
         }
