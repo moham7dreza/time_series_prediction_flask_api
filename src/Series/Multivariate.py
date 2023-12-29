@@ -48,24 +48,38 @@ class Multivariate:
 
     @staticmethod
     def splitted_multivariate_series(model_name, dataset, scaler, dates, titles):
-        # print(type(dates))  # <class 'list'>
+        print("title : ", titles)
+        print("------------------------------------------------------")
+        print("dataset shape, type : ", dataset.shape, type(dataset))
+        print("dataset : ", dataset)
+        print("------------------------------------------------------")
+        print("dates len and type : ", len(dates), type(dates))  # <class 'list'>
+        print("dates : ", np.array(dates))
+        print("------------------------------------------------------")
         # convert into input/output
         X, y = DataSampler.split_sequences(Config.multivariate, dataset)
-        # print(X.shape, y.shape)  # (284, 3, 5) (284, 5)
-        # the dataset knows the number of features, e.g., 2
+        print("X ,y shape and type : ", X.shape, y.shape, type(X), type(y))  # (284, 3, 5) (284, 5)
+        # the dataset knows the number of features
         n_features = X.shape[2]
-        # print('y : ', y)
+        print('X : ', X)
+        print('y : ', y)
+        print("------------------------------------------------------")
         # separate output dynamically based on n_features
         y_outputs = [y[:, i].reshape((y.shape[0], 1)) for i in range(n_features)]
-        # print('y_outputs sh : ', np.array(y_outputs).shape)  # (5, 284, 1)
-        # print('X : ', X.tolist())
-        # print('y_out : ', np.array(y_outputs).tolist())
-        # print('y_out np  ', np.array(y_outputs))
+        print('y_outputs shape and type : ', np.array(y_outputs).shape, type(y_outputs))  # (5, 284, 1)
+        print('y_outputs : ', np.array(y_outputs))
+        print("------------------------------------------------------")
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size,
-                                                            random_state=Config.random_state)
-        # print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)  # (227, 3, 5) (57, 3, 5) (227, 5) (57, 5)
-        # print(type(X_train), type(X_test), type(y_train), type(y_test))
+                                                            random_state=Config.random_state, shuffle=False)
+        print("X_train, X_test, y_train, y_test type : ", type(X_train), type(X_test), type(y_train), type(y_test))
         # <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'>
+        print("X_train, X_test, y_train, y_test shape : ", X_train.shape, X_test.shape, y_train.shape,
+              y_test.shape)  # (227, 3, 5) (57, 3, 5) (227, 5) (57, 5)
+        print("X_train : ", X_train)
+        print("y_train : ", y_train)
+        print("X_test : ", X_test)
+        print("y_test : ", y_test)
+        print("------------------------------------------------------")
         # Define the path for saving/loading the model
         if Config.colab:
             model_path = Config.drive_model_folder_path + '/{}.h5'.format('M-' + model_name)
@@ -81,22 +95,25 @@ class Multivariate:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model
-            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            model.fit(X, y, epochs=Config.epochs_for_multivariate_series, verbose=0)
 
             # Save the model
             model.save(model_path)
             print("Model '{}' saved to file.".format('M-' + model_name))
-
+        print("------------------------------------------------------")
         loss = model.evaluate(X_test, y_test)
         print("Model '{}' loss is : ".format('M-' + model_name), loss)
-
+        print("------------------------------------------------------")
         # Evaluate the model
         train_predictions = model.predict(X_train)
         test_predictions = model.predict(X_test)
-        # print(type(train_predictions[0]))  # <class 'numpy.ndarray'>
-        # print('eval : ', np.array(train_predictions).shape, np.array(test_predictions).shape)
+        print("predictions type : ", type(train_predictions), type(test_predictions))  # <class 'list'> <class 'list'>
+        print('predictions shape : ', np.array(train_predictions).shape, np.array(test_predictions).shape)
         # (5, 227, 1) (5, 57, 1)
-        # print(type(train_predictions), type(test_predictions))  # <class 'list'> <class 'list'>
+        # print(type(train_predictions[0]))  # <class 'numpy.ndarray'>
+        print('train predictions : ', np.array(train_predictions))
+        print('test predictions : ', np.array(test_predictions))
+        print("------------------------------------------------------")
         # Transform predictions back to original scale
         # train_predictions = np.concatenate([scaler.inverse_transform(pred) for pred in train_predictions], axis=1)
         # y_train = scaler.inverse_transform(y_train)
@@ -116,6 +133,7 @@ class Multivariate:
 
         print("Train RMSE : ", train_rmse)
         print("Test RMSE : ", test_rmse)
+        print("------------------------------------------------------")
         # print("Train ref RMSE : ", train_rmse_ref)
 
         # Sum the arrays element-wise at the same index
@@ -123,8 +141,12 @@ class Multivariate:
                        zip(train_predictions, test_predictions)]
         predictions = np.round(np.squeeze(predictions), 2)
         actuals = np.round(np.concatenate((y_train, y_test)), 2)
-        print(actuals.shape, predictions.shape)  # (284, 5)
-        # print(type(predictions), type(actuals))  # <class 'list'> <class 'numpy.ndarray'>
+        print("actuals and predictions type : ", type(actuals),
+              type(predictions))  # <class 'list'> <class 'numpy.ndarray'>
+        print("actuals and predictions shape : ", actuals.shape, predictions.shape)  # (284, 5)
+        print("actuals : ", actuals)
+        print("predictions : ", predictions)
+        print("------------------------------------------------------")
         # actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
         # predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
         # print('dates : ', len(dates))

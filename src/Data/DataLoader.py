@@ -1,5 +1,7 @@
 import io
 import os
+
+import numpy as np
 import pandas as pd
 # from google.colab import files
 from numpy import hstack
@@ -66,7 +68,7 @@ class DataLoader:
             # seq = scaler.fit_transform(seq)
             sequences.append(seq)
             # print(len(seq))
-        return hstack([seq.reshape(len(seq), 1) for seq in sequences]), scaler
+        return hstack([np.round(seq.reshape(len(seq), 1), 2) for seq in sequences]), scaler
 
     @staticmethod
     def data_preprocessing(dataset, date_col=Config.date_col, start_date=Config.start_date, end_date=Config.end_date,
