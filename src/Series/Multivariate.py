@@ -94,8 +94,8 @@ class Multivariate:
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
-            # Fit model
-            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            # Fit model TODO X or X_trait?
+            model.fit(X_train, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
 
             # Save the model
             model.save(model_path)
