@@ -74,11 +74,14 @@ class Runner:
     def run_for_univariate_series_ir_spiltted_price(dataset, models, price):
         scaler = MinMaxScaler(feature_range=(0, 1))
 
+        actuals = [round(data, 2) for data in dataset[price].tolist()]
+
         dates = dataset.index[:len(dataset) - int(Config.n_steps)]
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        results = {'labels': list(dates), 'datasets': {}}
+        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+
         for model in models:
             # print(f'[DEBUG] - in univariate of {model}')
             actuals, predictions = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
@@ -90,7 +93,7 @@ class Runner:
             #     index: {"date": data["date"], "predict": data["predict"]}
             #     for index, data in data_mapping.items()
             # }
-            results['datasets']['U-' + model + '-Actual'] = actuals
+            # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
             results['datasets']['U-' + model + '-Predict'] = predictions
 
         return results
@@ -111,10 +114,12 @@ class Runner:
             for title in titles:
                 label = title + '-' + price
 
-                if not results.get(label, {}):
-                    results[label] = {'labels': list(dates), 'datasets': {}}
+                actuals = [round(data, 2) for data in datasets[title][price].tolist()]
 
-                results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual']
+                if not results.get(label, {}):
+                    results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+
+                # results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual'] TODO actuals removed
                 results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
 
         return results
