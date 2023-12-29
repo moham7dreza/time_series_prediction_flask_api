@@ -48,17 +48,30 @@ class Univariate:
     @staticmethod
     def splitted_univariate_series(model_name, dataset, scaler, dates):
         # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
+        print("dataset shape, type : ", dataset.shape, type(dataset))  # (287, 1) <class 'numpy.ndarray'>
+        print("dataset : ", dataset)
         # split into samples
         X, y = DataSampler.split_sequences(Config.univariate, dataset)
-        # print(X.shape, y.shape)  # (284, 3, 1) (284, 1)
+        print("X ,y shape and type : ", X.shape, y.shape, type(X), type(y))  # (284, 3, 1) (284, 1) <class 'numpy.ndarray'> <class 'numpy.ndarray'>
+        print('X : ', X)
+        print('y : ', y)
+        print("------------------------------------------------------")
 
         # reshape from [samples, timesteps] into [samples, timesteps, features]
         n_features = 1
         X = X.reshape((X.shape[0], X.shape[1], n_features))
 
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size,
-                                                            random_state=Config.random_state)
-        # print(X_train.shape, X_test.shape, y_train.shape, y_test.shape,)  # (227, 3, 1) (57, 3, 1) (227, 1) (57, 1)
+                                                            random_state=Config.random_state, shuffle=False)
+        print("X_train, X_test, y_train, y_test type : ", type(X_train), type(X_test), type(y_train), type(y_test))
+        # <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'>
+        print("X_train, X_test, y_train, y_test shape : ", X_train.shape, X_test.shape, y_train.shape,
+              y_test.shape)  # (227, 3, 1) (57, 3, 1) (227, 1) (57, 1)
+        print("X_train : ", X_train)
+        print("y_train : ", y_train)
+        print("X_test : ", X_test)
+        print("y_test : ", y_test)
+        print("------------------------------------------------------")
         # Define the path for saving/loading the model
         if Config.colab:
             model_path = Config.drive_model_folder_path + '/{}.h5'.format('U-' + model_name)
@@ -93,6 +106,13 @@ class Univariate:
         test_predictions = scaler.inverse_transform(test_predictions)
         y_test = scaler.inverse_transform(y_test)
 
+        print("predictions type : ", type(train_predictions), type(test_predictions))  # <class 'numpy.ndarray'>
+        # <class 'numpy.ndarray'>
+        print('predictions shape : ', train_predictions.shape, test_predictions.shape)  # (227, 1) (57, 1)
+        print('train predictions : ', train_predictions)
+        print('test predictions : ', test_predictions)
+        print('pred - actual train : ', train_predictions - y_train)
+        print("------------------------------------------------------")
         # Calculate errors
         train_rmse = np.sqrt(np.mean(np.square(train_predictions - y_train)))
         test_rmse = np.sqrt(np.mean(np.square(test_predictions - y_test)))
@@ -100,8 +120,13 @@ class Univariate:
         print(f"Train RMSE: {train_rmse}")
         print(f"Test RMSE: {test_rmse}")
 
-        actuals = Helper.merge_and_clean(round_decimals=2, arr1=y_train, arr2=y_test),
-        predictions = Helper.merge_and_clean(round_decimals=2, arr1=train_predictions, arr2=test_predictions)
+        actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
+        predictions = np.round(np.concatenate((train_predictions, test_predictions), axis=0), 2)
+        print('actuals, predictions shape : ', actuals.shape, predictions.shape)  # (284, 1) (284, 1)
+        actuals = actuals.squeeze().tolist()
+        predictions = predictions.squeeze().tolist()
+        print('actuals : ', actuals)
+        print('predictions : ', predictions)
         # print(len(dates), len(actuals[0]), len(predictions))
         # # Check if all arrays have the same length
         # if len(dates) == len(actuals) == len(predictions):
@@ -120,4 +145,4 @@ class Univariate:
         #     for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
         # }
 
-        return actuals[0], predictions
+        return actuals, predictions
