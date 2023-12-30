@@ -2,6 +2,7 @@ import os
 from src.Config.Config import Config
 from src.Data.DataSampler import DataSampler
 from src.Helper.Helper import Helper
+from src.Model.Evaluation import Evaluation
 from src.Model.ModelBuilder import ModelBuilder
 from keras.models import load_model
 from sklearn.model_selection import train_test_split
@@ -127,16 +128,9 @@ class Multivariate:
         # print(train_predictions[0].shape, test_predictions[0].shape)  # (227, 1) (57, 1)
         # print(y_train.shape, y_test.shape)  # (227, 5) (57, 5)
         # Calculate errors
-        train_rmse = [np.round(np.sqrt(np.mean(np.square(train_predictions[i] - y_train[i]))), 2) for i in
-                      range(len(train_predictions))]
-        # train_rmse_ref = np.round(np.sqrt(np.mean((np.array(train_predictions) - np.array(y_train)) ** 2, axis=1)), 2)
 
-        test_rmse = [np.round(np.sqrt(np.mean(np.square(test_predictions[i] - y_test[i]))), 2) for i in
-                     range(len(test_predictions))]
-
-        print("Train RMSE : ", train_rmse)
-        print("Test RMSE : ", test_rmse)
-        print("------------------------------------------------------")
+        mae, mse, rmse, mape, r2 = Evaluation.calculateMetricsMultivariate(y_test, test_predictions)
+        # print("------------------------------------------------------")
         # print("Train ref RMSE : ", train_rmse_ref)
 
         # Sum the arrays element-wise at the same index
@@ -169,6 +163,8 @@ class Multivariate:
         # else:
         #     raise ValueError("Arrays must have the same length.")
         return {
-            title: {"actual": actual.tolist(), "predict": predict.tolist()}
-            for title, actual, predict in zip(titles, actuals, predictions)
+            title: {"actual": actual.tolist(), "predict": predict.tolist(), "mae": mae_metric, "mse": mse_metric,
+                    "rmse": rmse_metric, "mape": mape_metric, "r2": r2_metric, }
+            for title, actual, predict, mae_metric, mse_metric, rmse_metric, mape_metric, r2_metric in
+            zip(titles, actuals, predictions, mae, mse, rmse, mape, r2)
         }
