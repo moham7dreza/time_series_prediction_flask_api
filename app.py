@@ -29,6 +29,16 @@ def main():
     ), 201
 
 
+@app.route('/last-predict-props')
+def last_record():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': PredictService.latest().serialize()
+        }
+    ), 201
+
+
 @app.route('/datasets', methods=['POST'])
 def get_datasets():
     requests = request.get_json()

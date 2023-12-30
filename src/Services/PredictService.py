@@ -24,3 +24,6 @@ class PredictionService:
         task_to_delete = Predict.query.get(task_id)
         db.session.delete(task_to_delete)
         db.session.commit()
+
+    def latest(self):
+        return Predict.query.order_by(Predict.id.desc()).first()
