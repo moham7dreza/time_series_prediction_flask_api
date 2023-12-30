@@ -82,22 +82,24 @@ class Runner:
 
         results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals, 'metrics': {}}
 
-        for model in models:
-            # print(f'[DEBUG] - in univariate of {model}')
-            actuals, predictions, train_metrics, test_metrics = Univariate.splitted_univariate_series(model, dataset,
-                                                                                                      scaler, dates)
-            # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
-            # actual = {
-            #     index: {"date": data["date"], "actual": data["actual"]}
-            #     for index, data in data_mapping.items()
-            # }
-            # predict = {
-            #     index: {"date": data["date"], "predict": data["predict"]}
-            #     for index, data in data_mapping.items()
-            # }
-            # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
-            results['datasets']['U-' + model + '-Predict'] = predictions
-            results['metrics']['U-' + model] = test_metrics
+        for model in Config.models_name:
+            if model in models:
+                # print(f'[DEBUG] - in univariate of {model}')
+                actuals, predictions, train_metrics, test_metrics = Univariate.splitted_univariate_series(model,
+                                                                                                          dataset,
+                                                                                                          scaler, dates)
+                # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
+                # actual = {
+                #     index: {"date": data["date"], "actual": data["actual"]}
+                #     for index, data in data_mapping.items()
+                # }
+                # predict = {
+                #     index: {"date": data["date"], "predict": data["predict"]}
+                #     for index, data in data_mapping.items()
+                # }
+                # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
+                results['datasets']['U-' + model + '-Predict'] = predictions
+                results['metrics']['U-' + model] = test_metrics
 
         return results
 
@@ -111,19 +113,27 @@ class Runner:
         dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
         datasetTitles = list(datasets.keys())
 
-        for model in models:
-            # print(f'[DEBUG] - in multivariate of {model}')
-            run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
-            for title in titles:
-                label = title + '-' + price
+        for model in Config.models_name:
+            if model in models:
+                # print(f'[DEBUG] - in multivariate of {model}')
+                run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
+                for title in titles:
+                    label = title + '-' + price
 
-                actuals = [round(data, 2) for data in datasets[title][price].tolist()]
+                    actuals = [round(data, 2) for data in datasets[title][price].tolist()]
 
-                if not results.get(label, {}):
-                    results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+                    if not results.get(label, {}):
+                        results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals, 'metrics': {}}
 
-                # results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual'] TODO actuals removed
-                results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
+                    # results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual'] TODO actuals removed
+                    results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
+                    results[label]['metrics']['M-' + model] = {
+                        'MAE': run[title]['mae'],
+                        'MAPE': run[title]['mape'],
+                        'MSE': run[title]['mse'],
+                        'R2': run[title]['r2'],
+                        'RMSE': run[title]['rmse']
+                    }
 
         return results
 
