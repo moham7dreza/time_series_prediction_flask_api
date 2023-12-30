@@ -7,6 +7,7 @@ from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Helper.Helper import Helper
 from src.Migrations import db
+from src.Responses.DatasetResponse import DatasetResponse
 from src.Responses.PredictResponse import PredictResponse
 from src.Config.app import Config as appConfig
 from src.Services import PredictService
@@ -28,18 +29,21 @@ def main():
     ), 201
 
 
-@app.route('/datasets')
+@app.route('/datasets', methods=['POST'])
 def get_datasets():
+    requests = request.get_json()
+
+    requested_datasets = requests.get('dataset')
+    requested_prices = requests.get('price')
+
     datasets = DataLoader.get_datasets()
-    response = {}
-    for name, dataset in datasets.items():
-        response[name] = {index + 1: {"date": date, "close": close} for index, (date, close) in
-                          enumerate(zip(dataset.index.to_list(), dataset[Config.prediction_col].to_list()))}
+
+    results = DatasetResponse.total_response(datasets, requested_datasets, requested_prices)
 
     return jsonify(
         {
             'status': 'OK',
-            'data': response
+            'data': results
         }
     )
 
