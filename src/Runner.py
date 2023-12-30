@@ -80,11 +80,13 @@ class Runner:
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals, 'metrics': {}}
 
         for model in models:
             # print(f'[DEBUG] - in univariate of {model}')
-            actuals, predictions = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
+            actuals, predictions, train_metrics, test_metrics = Univariate.splitted_univariate_series(model, dataset,
+                                                                                                      scaler, dates)
+            # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
             # actual = {
             #     index: {"date": data["date"], "actual": data["actual"]}
             #     for index, data in data_mapping.items()
@@ -95,6 +97,7 @@ class Runner:
             # }
             # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
             results['datasets']['U-' + model + '-Predict'] = predictions
+            results['metrics']['U-' + model] = test_metrics
 
         return results
 

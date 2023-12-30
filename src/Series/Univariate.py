@@ -2,6 +2,7 @@ from src.Config.Config import Config
 from src.Data.DataSampler import DataSampler
 import os
 from src.Helper.Helper import Helper
+from src.Model.Evaluation import Evaluation
 from src.Model.ModelBuilder import ModelBuilder
 from keras.models import load_model
 import numpy as np
@@ -114,11 +115,8 @@ class Univariate:
         # print('pred - actual train : ', train_predictions - y_train)
         # print("------------------------------------------------------")
         # Calculate errors
-        train_rmse = np.sqrt(np.mean(np.square(train_predictions - y_train)))
-        test_rmse = np.sqrt(np.mean(np.square(test_predictions - y_test)))
-
-        print(f"Train RMSE: {train_rmse}")
-        print(f"Test RMSE: {test_rmse}")
+        train_metrics = Evaluation.calculateMetricsUnivariate(y_train, train_predictions)
+        test_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
 
         actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
         predictions = np.round(np.concatenate((train_predictions, test_predictions), axis=0), 2)
@@ -145,4 +143,4 @@ class Univariate:
         #     for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
         # }
 
-        return actuals, predictions
+        return actuals, predictions, train_metrics, test_metrics
