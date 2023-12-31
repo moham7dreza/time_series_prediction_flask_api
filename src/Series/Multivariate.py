@@ -48,7 +48,8 @@ class Multivariate:
         return yhat
 
     @staticmethod
-    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles):
+    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles, price):
+        price = Helper.str_remove_flags(price)
         # print("title : ", titles)
         # print("------------------------------------------------------")
         # print("dataset shape, type : ", dataset.shape, type(dataset))
@@ -82,25 +83,26 @@ class Multivariate:
         # print("y_test : ", y_test)
         # print("------------------------------------------------------")
         # Define the path for saving/loading the model
+        savedModelName = 'M-' + model_name + '-' + price
         if Config.colab:
-            model_path = Config.drive_model_folder_path + '/{}.h5'.format('M-' + model_name)
+            model_path = Config.drive_model_folder_path + '/{}.h5'.format(savedModelName)
         else:
-            model_path = Config.local_model_folder_path + '/{}.h5'.format('M-' + model_name)
+            model_path = Config.local_model_folder_path + '/{}.h5'.format(savedModelName)
 
         # Check if the model file exists
         if Config.checkForModelExistsInFolder and os.path.exists(model_path):
             # Load the existing model
             model = load_model(model_path)
-            print("Model '{}' loaded from file.".format('M-' + model_name))
+            print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model TODO X or X_trait?
-            model.fit(X_train, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
 
             # Save the model
             model.save(model_path)
-            print("Model '{}' saved to file.".format('M-' + model_name))
+            print("Model '{}' saved to file.".format(savedModelName))
         # print("------------------------------------------------------")
         y_test_outputs = [y_test[:, i].reshape((y_test.shape[0], 1)) for i in range(n_features)]
         # print('y_test_outputs shape and type : ', np.array(y_test_outputs).shape, type(y_test_outputs))  # (5, 284, 1)

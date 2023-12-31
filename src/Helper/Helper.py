@@ -44,3 +44,7 @@ class Helper:
     @staticmethod
     def implode(array):
         return ', '.join([str(item) for item in array])
+
+    @staticmethod
+    def str_remove_flags(string):
+        return string.replace('<', '').replace('>', '')

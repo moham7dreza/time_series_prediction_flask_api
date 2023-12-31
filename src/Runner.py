@@ -87,7 +87,7 @@ class Runner:
                 # print(f'[DEBUG] - in univariate of {model}')
                 actuals, predictions, test_metrics = Univariate.splitted_univariate_series(model,
                                                                                            dataset,
-                                                                                           scaler, dates)
+                                                                                           scaler, dates, label)
                 # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
                 # actual = {
                 #     index: {"date": data["date"], "actual": data["actual"]}
@@ -123,7 +123,7 @@ class Runner:
             if model in models:
                 # print(f'[DEBUG] - in multivariate of {model}')
                 run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates,
-                                                                              datasetTitles)
+                                                                              datasetTitles, price)
                 # print('[DEBUG] - model : ', model)
 
                 for title in titles:

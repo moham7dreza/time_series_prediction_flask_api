@@ -47,7 +47,8 @@ class Univariate:
         return yhat
 
     @staticmethod
-    def splitted_univariate_series(model_name, dataset, scaler, dates):
+    def splitted_univariate_series(model_name, dataset, scaler, dates, label):
+        label = Helper.str_remove_flags(label)
         # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
         # print("dataset shape, type : ", dataset.shape, type(dataset))  # (287, 1) <class 'numpy.ndarray'>
         # print("dataset : ", dataset)
@@ -74,16 +75,17 @@ class Univariate:
         # print("y_test : ", y_test)
         # print("------------------------------------------------------")
         # Define the path for saving/loading the model
+        savedModelName = 'U-' + model_name + '-' + label
         if Config.colab:
-            model_path = Config.drive_model_folder_path + '/{}.h5'.format('U-' + model_name)
+            model_path = Config.drive_model_folder_path + '/{}.h5'.format(savedModelName)
         else:
-            model_path = Config.local_model_folder_path + '/{}.h5'.format('U-' + model_name)
+            model_path = Config.local_model_folder_path + '/{}.h5'.format(savedModelName)
 
         # Check if the model file exists
         if Config.checkForModelExistsInFolder and os.path.exists(model_path):
             # Load the existing model
             model = load_model(model_path)
-            print("Model '{}' loaded from file.".format('U-' + model_name))
+            print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
@@ -92,10 +94,10 @@ class Univariate:
 
             # Save the model
             model.save(model_path)
-            print("Model '{}' saved to file.".format('U-' + model_name))
+            print("Model '{}' saved to file.".format(savedModelName))
 
         loss = model.evaluate(X_test, y_test)
-        print("Model '{}' loss is : ".format('U-' + model_name), loss)
+        print("Model '{}' loss is : ".format(savedModelName), loss)
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
