@@ -113,7 +113,7 @@ class Runner:
     def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles, requested_metrics, metrics):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
-        print('[DEBUG] price : ', price)
+        # print('[DEBUG] price : ', price)
         stackedDataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
 
         dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
@@ -124,11 +124,11 @@ class Runner:
                 # print(f'[DEBUG] - in multivariate of {model}')
                 run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates,
                                                                               datasetTitles)
-                print('[DEBUG] - model : ', model)
+                # print('[DEBUG] - model : ', model)
 
                 for title in titles:
                     label = title + '-' + price
-                    print('[DEBUG] - label : ', label)
+                    # print('[DEBUG] - label : ', label)
                     actuals = [round(data, 2) for data in datasets[title][price].tolist()]
 
                     if not results.get(label, {}):
@@ -146,19 +146,19 @@ class Runner:
 
                     for metric in Config.metrics_name:
                         if metric in requested_metrics:
-                            print('[DEBUG] - metrics before : ', metrics)
+                            # print('[DEBUG] - metrics before : ', metrics)
                             metricLabel = label + '-' + metric
-                            print('[DEBUG] - metric label', metricLabel)
+                            # print('[DEBUG] - metric label', metricLabel)
                             if not metrics.get(metricLabel, {}):
-                                print('[DEBUG] - metric label not found')
+                                # print('[DEBUG] - metric label not found')
                                 metrics[metricLabel] = {'labels': [], 'dataset': []}
                             if 'M-' + model not in metrics[metricLabel]['labels']:
                                 metrics[metricLabel]['labels'].append('M-' + model)
-                                print(f'[DEBUG] - add M-{model} to metrics[{metricLabel}][labels]')
-                                print(f'[DEBUG] - metrics[{metricLabel}][labels] is : ', metrics[metricLabel]['labels'])
+                                # print(f'[DEBUG] - add M-{model} to metrics[{metricLabel}][labels]')
+                                # print(f'[DEBUG] - metrics[{metricLabel}][labels] is : ', metrics[metricLabel]['labels'])
                                 metrics[metricLabel]['dataset'].append(test_metrics[title][metric])
-                                print(f'[DEBUG] - add {test_metrics[title][metric]} to metrics[{metricLabel}][dataset]')
-                                print(f'[DEBUG] - metrics[{metricLabel}][dataset] is : ', metrics[metricLabel]['dataset'])
+                                # print(f'[DEBUG] - add {test_metrics[title][metric]} to metrics[{metricLabel}][dataset]')
+                                # print(f'[DEBUG] - metrics[{metricLabel}][dataset] is : ', metrics[metricLabel]['dataset'])
 
         return results, metrics
 
