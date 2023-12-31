@@ -166,23 +166,23 @@ class ModelBuilder:
 
     @staticmethod
     def getModel(model_name, n_features):
-        if model_name == "CNN":
+        if model_name == Config.CNN:
             model = ModelBuilder.get_multi_output_CNN_model(n_features)
-        elif model_name == "LSTM":
+        elif model_name == Config.LSTM:
             model = ModelBuilder.get_multi_output_stacked_LSTM_model(n_features)
-        elif model_name == "bi-LSTM":
+        elif model_name == Config.bi_LSTM:
             model = ModelBuilder.get_multi_output_bi_LSTM_model(n_features)
-        elif model_name == "RNN":
+        elif model_name == Config.RNN:
             model = ModelBuilder.get_multi_output_RNN_model(n_features)
-        elif model_name == "bi-RNN":
+        elif model_name == Config.bi_RNN:
             model = ModelBuilder.get_multi_output_bi_RNN_model(n_features)
-        elif model_name == "GRU":
+        elif model_name == Config.GRU:
             model = ModelBuilder.get_multi_output_GRU_model(n_features)
-        elif model_name == "bi-GRU":
+        elif model_name == Config.bi_GRU:
             model = ModelBuilder.get_multi_output_bi_GRU_model(n_features)
-        elif model_name == "ANN":
+        elif model_name == Config.ANN:
             model = ModelBuilder.get_multi_output_ANN_model(n_features)
-        elif model_name == "bi-ANN":
+        elif model_name == Config.bi_ANN:
             model = ModelBuilder.get_multi_output_bi_ANN_model(n_features)
         else:
             raise Exception("model name not recognized")
