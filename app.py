@@ -68,6 +68,16 @@ def get_models_name():
     )
 
 
+@app.route('/metrics-name')
+def get_metrics_name():
+    return jsonify(
+        {
+            'status': 'OK',
+            'data': Config.metrics_name
+        }
+    )
+
+
 @app.route('/prices-name')
 def get_prices_name():
     return jsonify(
@@ -115,18 +125,20 @@ def make_prediction():
     requested_models = requests.get('model')
     requested_series = requests.get('serie')
     requested_prices = requests.get('price')
+    requested_metrics = requests.get('metric')
 
     PredictService.create(requests)
 
     datasets = DataLoader.get_datasets()
 
-    results = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
-                                             requested_series)
+    results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
+                                             requested_series, requested_metrics)
 
     return jsonify(
         {
             'status': 'ok',
-            'data': Helper.convert_to_python_float(results)
+            'data': Helper.convert_to_python_float(results),
+            'metrics': Helper.convert_to_python_float(metrics)
         }
     )
 

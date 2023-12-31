@@ -115,7 +115,7 @@ class Univariate:
         # print('pred - actual train : ', train_predictions - y_train)
         # print("------------------------------------------------------")
         # Calculate errors
-        train_metrics = Evaluation.calculateMetricsUnivariate(y_train, train_predictions)
+        # train_metrics = Evaluation.calculateMetricsUnivariate(y_train, train_predictions)
         test_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
 
         actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
@@ -143,4 +143,4 @@ class Univariate:
         #     for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
         # }
 
-        return actuals, predictions, train_metrics, test_metrics
+        return actuals, predictions, test_metrics

@@ -28,8 +28,10 @@ class PredictResponse:
         return results
 
     @staticmethod
-    def total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series):
+    def total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series,
+                       requested_metrics):
         results = {}
+        metrics = {}
 
         for title, dataset in datasets.items():
             for price in Config.prices_name:
@@ -39,12 +41,16 @@ class PredictResponse:
 
                     if Config.univariate in requested_series:
                         # print(f'[DEBUG] - in univariate for {label}')
-                        results[label] = Runner.run_for_univariate_series_ir_spiltted_price(dataset,
-                                                                                            requested_models,
-                                                                                            price)
+                        results[label], metrics = Runner.run_for_univariate_series_ir_spiltted_price(dataset,
+                                                                                                     requested_models,
+                                                                                                     price,
+                                                                                                     requested_metrics,
+                                                                                                     label, metrics)
                     if Config.multivariate in requested_series:
                         # print(f'[DEBUG] - in multivariate for {label}')
-                        results = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models, price,
-                                                                                 results, requested_datasets)
+                        results, metrics = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models,
+                                                                                          price,
+                                                                                          results, requested_datasets,
+                                                                                          requested_metrics, metrics)
 
-        return results
+        return results, metrics

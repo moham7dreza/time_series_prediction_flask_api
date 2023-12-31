@@ -71,7 +71,7 @@ class Runner:
         return results
 
     @staticmethod
-    def run_for_univariate_series_ir_spiltted_price(dataset, models, price):
+    def run_for_univariate_series_ir_spiltted_price(dataset, models, price, metrics, label, metricsResult):
         scaler = MinMaxScaler(feature_range=(0, 1))
 
         actuals = [round(data, 2) for data in dataset[price].tolist()]
@@ -80,14 +80,14 @@ class Runner:
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals, 'metrics': {}}
+        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
 
         for model in Config.models_name:
             if model in models:
                 # print(f'[DEBUG] - in univariate of {model}')
-                actuals, predictions, train_metrics, test_metrics = Univariate.splitted_univariate_series(model,
-                                                                                                          dataset,
-                                                                                                          scaler, dates)
+                actuals, predictions, test_metrics = Univariate.splitted_univariate_series(model,
+                                                                                           dataset,
+                                                                                           scaler, dates)
                 # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
                 # actual = {
                 #     index: {"date": data["date"], "actual": data["actual"]}
@@ -99,15 +99,21 @@ class Runner:
                 # }
                 # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
                 results['datasets']['U-' + model + '-Predict'] = predictions
-                results['metrics']['U-' + model] = test_metrics
-
-        return results
+                for metric in Config.metrics_name:
+                    if metric in metrics:
+                        metricLabel = label + '-' + metric
+                        if not metricsResult.get(metricLabel, {}):
+                            metricsResult[metricLabel] = {'labels': [], 'dataset': []}
+                        if 'U-' + model not in metricsResult[metricLabel]['labels']:
+                            metricsResult[metricLabel]['dataset'].append(test_metrics[metric])
+                            metricsResult[metricLabel]['labels'].append('U-' + model)
+        return results, metricsResult
 
     @staticmethod
-    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles):
+    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles, requested_metrics, metrics):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
-
+        print('[DEBUG] price : ', price)
         stackedDataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
 
         dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
@@ -116,26 +122,45 @@ class Runner:
         for model in Config.models_name:
             if model in models:
                 # print(f'[DEBUG] - in multivariate of {model}')
-                run = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates, datasetTitles)
+                run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates,
+                                                                              datasetTitles)
+                print('[DEBUG] - model : ', model)
+
                 for title in titles:
                     label = title + '-' + price
-
+                    print('[DEBUG] - label : ', label)
                     actuals = [round(data, 2) for data in datasets[title][price].tolist()]
 
                     if not results.get(label, {}):
-                        results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals, 'metrics': {}}
+                        results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
 
                     # results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual'] TODO actuals removed
                     results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
-                    results[label]['metrics']['M-' + model] = {
-                        'MAE': run[title]['mae'],
-                        'MAPE': run[title]['mape'],
-                        'MSE': run[title]['mse'],
-                        'R2': run[title]['r2'],
-                        'RMSE': run[title]['rmse']
-                    }
+                    # results[label]['metrics']['M-' + model] = {
+                    #     'MAE': run[title]['mae'],
+                    #     'MAPE': run[title]['mape'],
+                    #     'MSE': run[title]['mse'],
+                    #     'R2': run[title]['r2'],
+                    #     'RMSE': run[title]['rmse']
+                    # }
 
-        return results
+                    for metric in Config.metrics_name:
+                        if metric in requested_metrics:
+                            print('[DEBUG] - metrics before : ', metrics)
+                            metricLabel = label + '-' + metric
+                            print('[DEBUG] - metric label', metricLabel)
+                            if not metrics.get(metricLabel, {}):
+                                print('[DEBUG] - metric label not found')
+                                metrics[metricLabel] = {'labels': [], 'dataset': []}
+                            if 'M-' + model not in metrics[metricLabel]['labels']:
+                                metrics[metricLabel]['labels'].append('M-' + model)
+                                print(f'[DEBUG] - add M-{model} to metrics[{metricLabel}][labels]')
+                                print(f'[DEBUG] - metrics[{metricLabel}][labels] is : ', metrics[metricLabel]['labels'])
+                                metrics[metricLabel]['dataset'].append(test_metrics[title][metric])
+                                print(f'[DEBUG] - add {test_metrics[title][metric]} to metrics[{metricLabel}][dataset]')
+                                print(f'[DEBUG] - metrics[{metricLabel}][dataset] is : ', metrics[metricLabel]['dataset'])
+
+        return results, metrics
 
     @staticmethod
     def run_for_multivariate_series_ir(datasets):

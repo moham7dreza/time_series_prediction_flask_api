@@ -33,13 +33,13 @@ class Config:
     # model names
     CNN = 'CNN'
     LSTM = 'LSTM'
-    bi_LSTM = 'bi-LSTM'
+    bi_LSTM = 'B_LSTM'
     GRU = 'GRU'
-    bi_GRU = 'bi-GRU'
+    bi_GRU = 'B_GRU'
     ANN = 'ANN'
-    bi_ANN = 'bi-ANN'
+    bi_ANN = 'B_ANN'
     RNN = 'RNN'
-    bi_RNN = 'bi-RNN'
+    bi_RNN = 'B_RNN'
     models_name = [
         CNN,
         LSTM,
@@ -79,3 +79,10 @@ class Config:
     @staticmethod
     def getNSteps():
         return Config.n_steps
+
+    MAE = 'MAE'
+    MSE = 'MSE'
+    RMSE = 'RMSE'
+    MAPE = 'MAPE'
+    R2 = 'R2'
+    metrics_name = [MAE, MSE, RMSE, MAPE, R2]

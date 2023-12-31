@@ -129,7 +129,7 @@ class Multivariate:
         # print(y_train.shape, y_test.shape)  # (227, 5) (57, 5)
         # Calculate errors
 
-        mae, mse, rmse, mape, r2 = Evaluation.calculateMetricsMultivariate(y_test, test_predictions)
+        test_metrics = Evaluation.calculateMetricsMultivariate(y_test, test_predictions)
         # print("------------------------------------------------------")
         # print("Train ref RMSE : ", train_rmse_ref)
 
@@ -162,9 +162,14 @@ class Multivariate:
         #     return data_mapping
         # else:
         #     raise ValueError("Arrays must have the same length.")
-        return {
-            title: {"actual": actual.tolist(), "predict": predict.tolist(), "mae": mae_metric, "mse": mse_metric,
-                    "rmse": rmse_metric, "mape": mape_metric, "r2": r2_metric, }
-            for title, actual, predict, mae_metric, mse_metric, rmse_metric, mape_metric, r2_metric in
-            zip(titles, actuals, predictions, mae, mse, rmse, mape, r2)
+        results = {
+            title: {"actual": actual.tolist(), "predict": predict.tolist()}
+            for title, actual, predict in
+            zip(titles, actuals, predictions)
         }
+        metrics = {
+            title: {metric: test_metrics[metric][index] for metric in test_metrics}
+            for index, title in enumerate(titles)
+        }
+
+        return results, metrics

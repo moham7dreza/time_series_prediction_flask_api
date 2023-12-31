@@ -2,6 +2,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, accuracy_sc
     f1_score, r2_score
 import numpy as np
 
+from src.Config.Config import Config
+
 
 class Evaluation:
     @staticmethod
@@ -27,11 +29,11 @@ class Evaluation:
         # print("R-squared (R2):", r2)
 
         return {
-            'MAE': round(mae, 2),
-            'MSE': round(mse, 2),
-            'RMSE': round(rmse, 2),
-            'MAPE': round(mape, 2),
-            'R2': round(r2, 2),
+            Config.MAE: round(mae, 2),
+            Config.MSE: round(mse, 2),
+            Config.RMSE: round(rmse, 2),
+            Config.MAPE: round(mape, 2),
+            Config.R2: round(r2, 2),
         }
 
     @staticmethod
@@ -63,12 +65,10 @@ class Evaluation:
         r2 = [round(r2_score(actuals[i], predictions[i]), 2) for i in range(len(actuals))]
         # print("R-squared (R2):", r2)
 
-        # return {
-        #     'MAE': mae,
-        #     'MSE': mse,
-        #     'RMSE': rmse,
-        #     'MAPE': mape,
-        #     'R2': r2,
-        # }
-
-        return mae, mse, rmse, mape, r2
+        return {
+            Config.MAE: mae,
+            Config.MSE: mse,
+            Config.RMSE: rmse,
+            Config.MAPE: mape,
+            Config.R2: r2,
+        }
