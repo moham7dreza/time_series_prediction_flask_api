@@ -7,7 +7,8 @@ class Config:
     date_col = "<DTYYYYMMDD>"
     # start_date = '2017-06-10'
     start_date = '2014-01-07'
-    end_date = '2022-12-03'
+    # end_date = '2022-12-03'
+    end_date = '2022-10-10'
     n_steps = 3
     epochs_for_multivariate_series = 100
     epochs_for_univariate_series = 100
