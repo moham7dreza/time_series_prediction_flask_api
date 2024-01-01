@@ -42,6 +42,9 @@ class Config:
     bi_RNN = 'B_RNN'
     RF_REGRESSOR = 'RF_Regressor'
     GB_REGRESSOR = 'GB_Regressor'
+    DT_REGRESSOR = 'DT_Regressor'
+    XGB_REGRESSOR = 'XGB_Regressor'
+    Linear_REGRESSION = 'Linear_REGRESSION'
     models_name = [
         CNN,
         LSTM,
@@ -53,7 +56,10 @@ class Config:
         RNN,
         bi_RNN,
         # RF_REGRESSOR,
-        # GB_REGRESSOR
+        # GB_REGRESSOR,
+        # DT_REGRESSOR,
+        # XGB_REGRESSOR,
+        # Linear_REGRESSION,
     ]
     # series type
     univariate = 'univariate'
@@ -70,6 +76,7 @@ class Config:
     test_size = 0.2
     random_state = 42
     estimators = 100
+    learning_rate = 0.1
 
     Close = '<CLOSE>'
     High = '<HIGH>'

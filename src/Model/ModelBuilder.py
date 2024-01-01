@@ -1,8 +1,10 @@
 from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidirectional, GRU, Dropout, SimpleRNN
 from keras.models import Model
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-
+from sklearn.linear_model import LinearRegression
 from src.Config.Config import Config
+from xgboost import XGBRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 
 class ModelBuilder:
@@ -174,6 +176,19 @@ class ModelBuilder:
         return GradientBoostingRegressor(n_estimators=Config.estimators, random_state=Config.random_state)
 
     @staticmethod
+    def get_linear_regression_model():
+        return LinearRegression()
+
+    @staticmethod
+    def get_xgb_regressor_model():
+        return XGBRegressor(n_estimators=Config.estimators, learning_rate=Config.learning_rate,
+                            random_state=Config.random_state)
+
+    @staticmethod
+    def get_dt_regressor_model():
+        return DecisionTreeRegressor(random_state=Config.random_state)
+
+    @staticmethod
     def getModel(model_name, n_features):
         if model_name == Config.CNN:
             model = ModelBuilder.get_multi_output_CNN_model(n_features)
@@ -197,6 +212,12 @@ class ModelBuilder:
             model = ModelBuilder.get_RF_Regressor_model()
         elif model_name == Config.GB_REGRESSOR:
             model = ModelBuilder.get_GB_Regressor_model()
+        elif model_name == Config.XGB_REGRESSOR:
+            model = ModelBuilder.get_xgb_regressor_model()
+        elif model_name == Config.DT_REGRESSOR:
+            model = ModelBuilder.get_dt_regressor_model()
+        elif model_name == Config.Linear_REGRESSION:
+            model = ModelBuilder.get_linear_regression_model()
         else:
             raise Exception("model name not recognized")
         return model
