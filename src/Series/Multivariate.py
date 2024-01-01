@@ -48,7 +48,7 @@ class Multivariate:
         return yhat
 
     @staticmethod
-    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles, price):
+    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles, price, fit_regressor=False):
         price = Helper.str_remove_flags(price)
         # print("title : ", titles)
         # print("------------------------------------------------------")
@@ -98,7 +98,10 @@ class Multivariate:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model TODO X or X_trait?
-            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            if fit_regressor:
+                model.fit(X, y_outputs)
+            else:
+                model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
 
             # Save the model
             model.save(model_path)

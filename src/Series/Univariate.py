@@ -47,7 +47,7 @@ class Univariate:
         return yhat
 
     @staticmethod
-    def splitted_univariate_series(model_name, dataset, scaler, dates, label):
+    def splitted_univariate_series(model_name, dataset, scaler, dates, label, fit_regressor=False):
         label = Helper.str_remove_flags(label)
         # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
         # print("dataset shape, type : ", dataset.shape, type(dataset))  # (287, 1) <class 'numpy.ndarray'>
@@ -90,7 +90,10 @@ class Univariate:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model
-            model.fit(X_train, y_train, epochs=Config.epochs_for_univariate_series, batch_size=32)
+            if fit_regressor:
+                model.fit(X_train, y_train)
+            else:
+                model.fit(X_train, y_train, epochs=Config.epochs_for_univariate_series, batch_size=32)
 
             # Save the model
             model.save(model_path)

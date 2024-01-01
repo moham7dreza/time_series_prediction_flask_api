@@ -40,6 +40,8 @@ class Config:
     bi_ANN = 'B_ANN'
     RNN = 'RNN'
     bi_RNN = 'B_RNN'
+    RF_REGRESSOR = 'RF_Regressor'
+    GB_REGRESSOR = 'GB_Regressor'
     models_name = [
         CNN,
         LSTM,
@@ -50,6 +52,8 @@ class Config:
         bi_ANN,
         RNN,
         bi_RNN,
+        # RF_REGRESSOR,
+        # GB_REGRESSOR
     ]
     # series type
     univariate = 'univariate'
@@ -65,6 +69,7 @@ class Config:
     checkForModelExistsInFolder = True
     test_size = 0.2
     random_state = 42
+    estimators = 100
 
     Close = '<CLOSE>'
     High = '<HIGH>'

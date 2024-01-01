@@ -1,5 +1,6 @@
 from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidirectional, GRU, Dropout, SimpleRNN
 from keras.models import Model
+from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 
 from src.Config.Config import Config
 
@@ -165,6 +166,14 @@ class ModelBuilder:
         return model
 
     @staticmethod
+    def get_RF_Regressor_model():
+        return RandomForestRegressor(n_estimators=Config.estimators, random_state=Config.random_state)
+
+    @staticmethod
+    def get_GB_Regressor_model():
+        return GradientBoostingRegressor(n_estimators=Config.estimators, random_state=Config.random_state)
+
+    @staticmethod
     def getModel(model_name, n_features):
         if model_name == Config.CNN:
             model = ModelBuilder.get_multi_output_CNN_model(n_features)
@@ -184,6 +193,10 @@ class ModelBuilder:
             model = ModelBuilder.get_multi_output_ANN_model(n_features)
         elif model_name == Config.bi_ANN:
             model = ModelBuilder.get_multi_output_bi_ANN_model(n_features)
+        elif model_name == Config.RF_REGRESSOR:
+            model = ModelBuilder.get_RF_Regressor_model()
+        elif model_name == Config.GB_REGRESSOR:
+            model = ModelBuilder.get_GB_Regressor_model()
         else:
             raise Exception("model name not recognized")
         return model
