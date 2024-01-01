@@ -5,7 +5,8 @@ class Config:
     colab = False
     plotting = False
     date_col = "<DTYYYYMMDD>"
-    start_date = '2017-06-10'
+    # start_date = '2017-06-10'
+    start_date = '2014-01-07'
     end_date = '2022-12-03'
     n_steps = 3
     epochs_for_multivariate_series = 100
@@ -24,6 +25,7 @@ class Config:
     home_file_name = 'Maskan.Invest_from_2014.csv'
     housing_file_name = 'Housing.Inv.from_2004.csv'
     gold_file_name = 'Lotus.Gold.Com.ETF_from_2017.csv'
+    kh_gold_file_name = 'Kharazmi.Info._GOLD_from_2014.csv'
     # dataset titles
     titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold', ]
     Dollar = 'Dollar'

@@ -125,10 +125,10 @@ class DataLoader:
             dfs = DataLoader.read_csv_files_from_local()
 
         ir_dollar = dfs[Config.dollar_file_name]
-        ir_home = dfs[Config.home_file_name]
+        ir_home = dfs[Config.housing_file_name]
         ir_oil = dfs[Config.oil_file_name]
-        ir_car = dfs[Config.car_file_name]
-        ir_gold = dfs[Config.gold_file_name]
+        ir_car = dfs[Config.am_car_file_name]
+        ir_gold = dfs[Config.kh_gold_file_name]
 
         ir_dollar = DataLoader.data_preprocessing(ir_dollar, format=False)
         ir_home = DataLoader.data_preprocessing(ir_home)
