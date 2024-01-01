@@ -19,8 +19,10 @@ class Config:
     # 1. set csv dataset file names
     dollar_file_name = 'dollar_tjgu_from_2012.csv'
     car_file_name = 'Iran.Khodro_from_2001.csv'
+    am_car_file_name = 'Iran.Kh..A..M._from_2001.csv'
     oil_file_name = 'S_Parsian.Oil&Gas_from_2012.csv'
     home_file_name = 'Maskan.Invest_from_2014.csv'
+    housing_file_name = 'Housing.Inv.from_2004.csv'
     gold_file_name = 'Lotus.Gold.Com.ETF_from_2017.csv'
     # dataset titles
     titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold', ]
