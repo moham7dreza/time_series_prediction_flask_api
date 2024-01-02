@@ -29,7 +29,7 @@ class Multivariate:
         if os.path.exists(model_path):
             # Load the existing model
             model = load_model(model_path)
-            print("Model '{}' loaded from file.".format('M-' + model_name))
+            # print("Model '{}' loaded from file.".format('M-' + model_name))
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
@@ -38,7 +38,7 @@ class Multivariate:
 
             # Save the model
             model.save(model_path)
-            print("Model '{}' saved to file.".format('M-' + model_name))
+            # print("Model '{}' saved to file.".format('M-' + model_name))
 
         # demonstrate prediction
         x_input = test.reshape((1, Config.n_steps, n_features))
@@ -93,7 +93,7 @@ class Multivariate:
         if Config.checkForModelExistsInFolder and os.path.exists(model_path):
             # Load the existing model
             model = load_model(model_path)
-            print("Model '{}' loaded from file.".format(savedModelName))
+            # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
@@ -105,7 +105,7 @@ class Multivariate:
 
             # Save the model
             model.save(model_path)
-            print("Model '{}' saved to file.".format(savedModelName))
+            # print("Model '{}' saved to file.".format(savedModelName))
         # print("------------------------------------------------------")
         y_test_outputs = [y_test[:, i].reshape((y_test.shape[0], 1)) for i in range(n_features)]
         # print('y_test_outputs shape and type : ', np.array(y_test_outputs).shape, type(y_test_outputs))  # (5, 284, 1)

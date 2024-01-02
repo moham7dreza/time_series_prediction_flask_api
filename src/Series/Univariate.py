@@ -85,7 +85,7 @@ class Univariate:
         if Config.checkForModelExistsInFolder and os.path.exists(model_path):
             # Load the existing model
             model = load_model(model_path)
-            print("Model '{}' loaded from file.".format(savedModelName))
+            # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
@@ -97,10 +97,10 @@ class Univariate:
 
             # Save the model
             model.save(model_path)
-            print("Model '{}' saved to file.".format(savedModelName))
+            # print("Model '{}' saved to file.".format(savedModelName))
 
         loss = model.evaluate(X_test, y_test)
-        print("Model '{}' loss is : ".format(savedModelName), loss)
+        # print("Model '{}' loss is : ".format(savedModelName), loss)
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
