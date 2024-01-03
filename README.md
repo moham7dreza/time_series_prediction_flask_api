@@ -4,7 +4,7 @@ Welcome to the API App powered by Flask and Python! This application serves as a
 
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
-  1. [Clone the Repository](#1-clone-the-repository)
+  1. [Clone the Repository]()
   2. [Navigate to the Project Directory](#2-navigate-to-the-project-directory)
   3. [Install Python Packages](#3-install-the-required-python-packages)
   4. [Set Up the MySQL Database](#4-set-up-the-mysql-database)
@@ -33,68 +33,59 @@ Before getting started, make sure you have the following prerequisites installed
 
 ## Setup
 
-1. Clone the Repository:
-
-    ```bash
+### 1. Clone the Repository:
+    
     git clone https://github.com/moham7dreza/time_series_prediction_flask_api
-    ```
 
-2. Navigate to the project directory:
-
-    ```bash
+### 2. Navigate to the project directory
+    
     cd time_series_prediction_flask_api
-    ```
-
-3. Install the required Python packages:
-
-    ```bash
+    
+### 3. Install the required Python packages
+    
     pip install -r requirements.txt
-    ```
-4. Set up the MySQL Database:
+    
+### 4. Set up the MySQL Database:
 
-    - Log in to MySQL with your MySQL client:
+- Log in to MySQL with your MySQL client:
 
-      ```bash
       mysql -u your_database_user -p
-      ```
 
-    - Create a new database:
+- Create a new database:
 
-      ```sql
-      CREATE DATABASE your_database_name;
-      ```
+  ```sql
+  CREATE DATABASE your_database_name;
+  ```
 
-    - Exit the MySQL shell:
+- Exit the MySQL shell:
 
-      ```sql
-      EXIT;
-      ```
+  ```sql
+  EXIT;
+  ```
       
-5. Set up the database credentials:
+### 5. Set up the database credentials:
 
-    - Create a `.env` file in the project directory.
-    - Add the following lines to the `.env` file, replacing the placeholders with your MySQL credentials:
+- Create a `.env` file in the project directory.
+- Add the following lines to the `.env` file, replacing the placeholders with your MySQL credentials:
 
-        ```env
-        DB_HOST=your_database_host
-        DB_USER=your_database_user
-        DB_PASSWORD=your_database_password
-        DB_NAME=your_database_name
-        ```
+    ```env
+    DB_HOST=your_database_host
+    DB_USER=your_database_user
+    DB_PASSWORD=your_database_password
+    DB_NAME=your_database_name
+    ```
 
-6. Run Migrations:
+### 6. Run Migrations:
 
-    - In the project directory, run the following commands to create and apply migrations:
+- In the project directory, run the following commands to create and apply migrations:
 
-      ```bash
       flask db init
       flask db migrate
       flask db upgrade
-      ```
 
-      This will set up the necessary tables in your MySQL database.
+This will set up the necessary tables in your MySQL database.
 
-7. For the React front-end source code :
+### 7. For the React front-end source code:
 
  - please visit the [React GitHub Repository](https://github.com/moham7dreza/time_series_prediction_react).
 
