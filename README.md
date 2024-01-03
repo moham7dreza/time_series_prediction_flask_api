@@ -33,24 +33,24 @@ Before getting started, make sure you have the following prerequisites installed
 
 ## Setup
 
-### 1. Clone the Repository:
+1. Clone the Repository:
 
     ```bash
     git clone https://github.com/moham7dreza/time_series_prediction_flask_api
     ```
 
-### 2. Navigate to the project directory:
+2. Navigate to the project directory:
 
     ```bash
     cd time_series_prediction_flask_api
     ```
 
-### 3. Install the required Python packages:
+3. Install the required Python packages:
 
     ```bash
     pip install -r requirements.txt
     ```
-### 4. Set up the MySQL Database:
+4. Set up the MySQL Database:
 
     - Log in to MySQL with your MySQL client:
 
@@ -70,7 +70,7 @@ Before getting started, make sure you have the following prerequisites installed
       EXIT;
       ```
       
-### 5. Set up the database credentials:
+5. Set up the database credentials:
 
     - Create a `.env` file in the project directory.
     - Add the following lines to the `.env` file, replacing the placeholders with your MySQL credentials:
@@ -82,7 +82,7 @@ Before getting started, make sure you have the following prerequisites installed
         DB_NAME=your_database_name
         ```
 
-### 6. Run Migrations:
+6. Run Migrations:
 
     - In the project directory, run the following commands to create and apply migrations:
 
@@ -94,9 +94,9 @@ Before getting started, make sure you have the following prerequisites installed
 
       This will set up the necessary tables in your MySQL database.
 
-### 7. For the React front-end source code
+7. For the React front-end source code :
 
-please visit the [React GitHub Repository](https://github.com/moham7dreza/time_series_prediction_react).
+ - please visit the [React GitHub Repository](https://github.com/moham7dreza/time_series_prediction_react).
 
 ## Data and Models
 
