@@ -2,6 +2,27 @@
 
 Welcome to the API App powered by Flask and Python! This application serves as a backend API that interacts with a MySQL database and provides data endpoints for a React front-end application.
 
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+  1. [Clone the Repository](#1-clone-the-repository)
+  2. [Navigate to the Project Directory](#2-navigate-to-the-project-directory)
+  3. [Install Python Packages](#3-install-the-required-python-packages)
+  4. [Set Up the MySQL Database](#4-set-up-the-mysql-database)
+  5. [Set Up Database Credentials](#5-set-up-the-database-credentials)
+  6. [Run Migrations](#6-run-migrations)
+  7. [For the React Front-End Source Code](#7-for-the-react-front-end-source-code)
+- [Data and Models](#data-and-models)
+  - [Data Storage](#data-storage)
+  - [Datasets Used](#datasets-used)
+  - [Data Preprocessing](#data-preprocessing)
+    - [Number of Time Steps (n_steps)](#number-of-time-steps-n_steps)
+  - [Prices for Prediction](#prices-for-prediction)
+  - [Models Trained](#models-trained)
+  - [Training Details](#training-details)
+  - [Evaluation Metrics](#evaluation-metrics)
+- [MySQL Usage](#mysql-usage)
+- [Running the Project](#running-the-project)
+
 ## Prerequisites
 
 Before getting started, make sure you have the following prerequisites installed on your system:
@@ -12,24 +33,24 @@ Before getting started, make sure you have the following prerequisites installed
 
 ## Setup
 
-1. Clone this repository to your local machine:
+### 1. Clone the Repository:
 
     ```bash
     git clone https://github.com/moham7dreza/time_series_prediction_flask_api
     ```
 
-2. Navigate to the project directory:
+### 2. Navigate to the project directory:
 
     ```bash
     cd time_series_prediction_flask_api
     ```
 
-3. Install the required Python packages:
+### 3. Install the required Python packages:
 
     ```bash
     pip install -r requirements.txt
     ```
-4. Set up the MySQL Database:
+### 4. Set up the MySQL Database:
 
     - Log in to MySQL with your MySQL client:
 
@@ -49,7 +70,7 @@ Before getting started, make sure you have the following prerequisites installed
       EXIT;
       ```
       
-5. Set up the database credentials:
+### 5. Set up the database credentials:
 
     - Create a `.env` file in the project directory.
     - Add the following lines to the `.env` file, replacing the placeholders with your MySQL credentials:
@@ -61,7 +82,7 @@ Before getting started, make sure you have the following prerequisites installed
         DB_NAME=your_database_name
         ```
 
-6. Run Migrations:
+### 6. Run Migrations:
 
     - In the project directory, run the following commands to create and apply migrations:
 
@@ -73,7 +94,9 @@ Before getting started, make sure you have the following prerequisites installed
 
       This will set up the necessary tables in your MySQL database.
 
-7. For the React front-end source code, please visit the [React GitHub Repository](https://github.com/moham7dreza/time_series_prediction_react).
+### 7. For the React front-end source code
+
+please visit the [React GitHub Repository](https://github.com/moham7dreza/time_series_prediction_react).
 
 ## Data and Models
 
