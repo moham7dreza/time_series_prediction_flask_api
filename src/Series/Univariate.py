@@ -122,8 +122,9 @@ class Univariate:
         # Calculate errors
         # train_metrics = Evaluation.calculateMetricsUnivariate(y_train, train_predictions)
         test_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
-
+        # y_train shape : (227, 1),  y_test shape : (57, 1) -> merge shape (284, 1)
         actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
+        # (227, 1) (57, 1) -> merge shape (284, 1)
         predictions = np.round(np.concatenate((train_predictions, test_predictions), axis=0), 2)
         # print('actuals, predictions shape : ', actuals.shape, predictions.shape)  # (284, 1) (284, 1)
         actuals = actuals.squeeze().tolist()

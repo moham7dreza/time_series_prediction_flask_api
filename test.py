@@ -395,6 +395,9 @@
 # print("Actuals:")
 # print(y_test)
 #
+import numpy as np
+from sklearn.metrics import mean_absolute_error
+
 from src.Helper.Helper import Helper
 
 if __name__ == '__main__':
@@ -410,7 +413,13 @@ if __name__ == '__main__':
     # Generate a synthetic dataset
     # X = np.round(np.random.rand(10, 3, 5), 2)  # 100 samples, 3 features
     # X2 = np.random.rand(10, 3, 5)  # 100 samples, 3 features
-    # y = np.round(np.random.rand(10, 5), 2)
+    y = np.round(np.random.rand(10, 1), 2)
+    y2 = np.round(np.random.rand(10, 1), 2)
+    print(y, y2)
+    print((np.concatenate((y, y2))).shape)
+    mae_list = mean_absolute_error(y.tolist(), y2.tolist())
+    mae = mean_absolute_error(y, y2)
+    print(mae, mae_list)
     # y_outputs = [y[:, i].reshape((y.shape[0], 1)) for i in range(5)]
     # 100 samples, 2 features
     # y2 = np.random.rand(2, 5).tolist()  # 100 samples, 2 features
@@ -445,13 +454,11 @@ if __name__ == '__main__':
     # Now, X_train and y_train contain the training data, and X_test and y_test contain the testing data.
     # You can use these datasets to train and evaluate your machine learning model.
 
-    array1 = ['cmm', 2, 3, 4, 5]
-    array2 = [4, 'cmm', 6, 7, 8]
-
-    # Merge arrays and remove duplicates
-    merged_array = list(set(array1 + array2))
-
-    # Print the merged array without duplicates
-    print(merged_array)
-
-
+    # array1 = ['cmm', 2, 3, 4, 5]
+    # array2 = [4, 'cmm', 6, 7, 8]
+    #
+    # # Merge arrays and remove duplicates
+    # merged_array = list(set(array1 + array2))
+    #
+    # # Print the merged array without duplicates
+    # print(merged_array)
