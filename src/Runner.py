@@ -1,10 +1,9 @@
-import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Series.Multivariate import Multivariate
 from src.Series.Univariate import Univariate
-from sklearn.preprocessing import MinMaxScaler
 
 
 class Runner:

@@ -1,4 +1,5 @@
 import pandas as pd
+
 from src.Config.Config import Config
 from src.Data.DataLoader import DataLoader
 from src.Plot.ResultPlotter import ResultPlotter

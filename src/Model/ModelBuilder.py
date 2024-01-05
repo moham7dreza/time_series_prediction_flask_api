@@ -2,9 +2,10 @@ from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidi
 from keras.models import Model
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import LinearRegression
-from src.Config.Config import Config
-from xgboost import XGBRegressor
 from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRegressor
+
+from src.Config.Config import Config
 
 
 class ModelBuilder:

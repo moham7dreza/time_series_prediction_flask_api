@@ -1,4 +1,5 @@
 from numpy import array
+
 from src.Config.Config import Config
 
 

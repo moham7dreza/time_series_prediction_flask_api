@@ -18,4 +18,3 @@ class Predict(db.Model):
             'prices': self.prices,
             'n_steps': self.n_steps,
         }
-

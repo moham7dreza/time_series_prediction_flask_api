@@ -1,12 +1,14 @@
 import os
+
+import numpy as np
+from keras.models import load_model
+from sklearn.model_selection import train_test_split
+
 from src.Config.Config import Config
 from src.Data.DataSampler import DataSampler
 from src.Helper.Helper import Helper
 from src.Model.Evaluation import Evaluation
 from src.Model.ModelBuilder import ModelBuilder
-from keras.models import load_model
-from sklearn.model_selection import train_test_split
-import numpy as np
 
 
 class Multivariate:

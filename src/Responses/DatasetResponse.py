@@ -16,4 +16,3 @@ class DatasetResponse:
                         response[title]['datasets'][price] = dataset[price].to_list()
 
         return response
-
