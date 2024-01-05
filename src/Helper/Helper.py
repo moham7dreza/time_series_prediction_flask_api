@@ -53,7 +53,7 @@ class Helper:
     @staticmethod
     def find_min_max_indexes(arr, k):
         # Check if the array has enough elements
-        if len(arr) < k:
+        if len(arr) < int(k):
             k = len(arr)
 
         # Initialize lists to store the indexes of the minimum and maximum numbers

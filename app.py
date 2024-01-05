@@ -134,7 +134,7 @@ def make_prediction():
 
     results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
                                                       requested_series, requested_metrics)
-    if n_top_models_to_ensemble is not None:
+    if n_top_models_to_ensemble > 0:
         results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble,
                                                                            apply_combinations)
 
