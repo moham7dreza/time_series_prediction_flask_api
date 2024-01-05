@@ -48,3 +48,40 @@ class Helper:
     @staticmethod
     def str_remove_flags(string):
         return string.replace('<', '').replace('>', '')
+
+    @staticmethod
+    def find_min_max_indexes(arr, k):
+        # Check if the array has enough elements
+        if len(arr) < k:
+            k = len(arr)
+
+        # Initialize lists to store the indexes of the minimum and maximum numbers
+        min_indexes = []
+        max_indexes = []
+
+        # Iterate through the array
+        for i, num in enumerate(arr):
+            # Update min_indexes based on the current element
+            if len(min_indexes) < k:
+                min_indexes.append(i)
+            else:
+                # Find the index of the maximum element in min_indexes
+                max_index = min_indexes.index(max(min_indexes, key=lambda x: arr[x]))
+
+                # Replace the largest element's index if the current element is smaller
+                if num < arr[min_indexes[max_index]]:
+                    min_indexes[max_index] = i
+
+            # Update max_indexes based on the current element
+            if len(max_indexes) < k:
+                max_indexes.append(i)
+            else:
+                # Find the index of the minimum element in max_indexes
+                min_index = max_indexes.index(min(max_indexes, key=lambda x: arr[x]))
+
+                # Replace the smallest element's index if the current element is larger
+                if num > arr[max_indexes[min_index]]:
+                    max_indexes[min_index] = i
+
+        # Return both the indexes of the minimum and maximum numbers
+        return min_indexes, max_indexes

@@ -126,13 +126,16 @@ def make_prediction():
     requested_series = requests.get('serie')
     requested_prices = requests.get('price')
     requested_metrics = requests.get('metric')
+    n_top_models_to_ensemble = requests.get('n_top_models_to_ensemble')
 
     PredictService.create(requests)
 
     datasets = DataLoader.get_datasets()
 
     results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
-                                             requested_series, requested_metrics)
+                                                      requested_series, requested_metrics)
+    if n_top_models_to_ensemble is not None:
+        results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble)
 
     return jsonify(
         {

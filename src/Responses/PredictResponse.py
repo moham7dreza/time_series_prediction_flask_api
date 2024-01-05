@@ -1,4 +1,7 @@
+import numpy as np
+
 from src.Config.Config import Config
+from src.Helper.Helper import Helper
 from src.Runner import Runner
 
 
@@ -52,5 +55,40 @@ class PredictResponse:
                                                                                           price,
                                                                                           results, requested_datasets,
                                                                                           requested_metrics, metrics)
+
+        return results, metrics
+
+    @staticmethod
+    def add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble):
+        ensemble = None
+        top_models = []
+        for label, data in metrics.items():
+            # for ensemble need to have at least 2 models
+            if len(data['dataset']) < 2:
+                break
+            min_indexes, max_indexes = Helper.find_min_max_indexes(data['dataset'], n_top_models_to_ensemble)
+            if Config.MAE in label or Config.MAPE in label or Config.MSE in label or Config.RMSE in label:
+                top_models = [data['labels'][index] for index in min_indexes]
+            elif Config.R2 in label:
+                top_models = [data['labels'][index] for index in max_indexes]
+            break
+
+        if len(top_models) >= 2:
+            for label, data in results.items():
+                for model, prediction in data['datasets'].items():
+                    # for example convert 'M-CNN-Predict' to 'M-CNN'
+                    model = '-'.join(model.split('-')[:-1])
+                    if model in top_models:
+                        # train_point = round(len(data['actuals']) - (len(data['actuals']) * Config.test_size))
+                        # test_predictions = prediction[train_point:]
+                        if ensemble is None:
+                            ensemble = np.array(prediction)
+                        else:
+                            ensemble += np.array(prediction)
+                if ensemble is not None:
+                    ensemble /= len(top_models)
+                    if results.get(label, {}):
+                        ensemble_title = '-'.join(top_models) + '-(Ensembled)-Predict'
+                        results[label]['datasets'][ensemble_title] = ensemble.tolist()
 
         return results, metrics
