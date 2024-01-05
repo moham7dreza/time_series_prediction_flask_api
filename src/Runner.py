@@ -72,10 +72,10 @@ class Runner:
     @staticmethod
     def run_for_univariate_series_ir_spiltted_price(dataset, models, price, metrics, label, metricsResult):
         scaler = MinMaxScaler(feature_range=(0, 1))
+        with_out_n_steps_point = len(dataset) - int(Config.n_steps)
+        actuals = [round(data, 2) for data in dataset[price].tolist()][:with_out_n_steps_point]
 
-        actuals = [round(data, 2) for data in dataset[price].tolist()]
-
-        dates = dataset.index[:len(dataset) - int(Config.n_steps)]
+        dates = dataset.index[:with_out_n_steps_point]
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
@@ -114,8 +114,8 @@ class Runner:
         scaler = MinMaxScaler(feature_range=(0, 1))
         # print('[DEBUG] price : ', price)
         stackedDataset, scaler = DataLoader.stack_datasets_splitted(datasets, price, scaler)
-
-        dates = datasets[Config.Dollar].index[:len(stackedDataset) - int(Config.n_steps)].tolist()
+        with_out_n_steps_point = len(stackedDataset) - int(Config.n_steps)
+        dates = datasets[Config.Dollar].index[:with_out_n_steps_point].tolist()
         datasetTitles = list(datasets.keys())
 
         for model in Config.models_name:
@@ -128,7 +128,7 @@ class Runner:
                 for title in titles:
                     label = title + '-' + price
                     # print('[DEBUG] - label : ', label)
-                    actuals = [round(data, 2) for data in datasets[title][price].tolist()]
+                    actuals = [round(data, 2) for data in datasets[title][price].tolist()][:with_out_n_steps_point]
 
                     if not results.get(label, {}):
                         results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
