@@ -50,6 +50,7 @@ class Config:
     DT_REGRESSOR = 'DT_Regressor'
     XGB_REGRESSOR = 'XGB_Regressor'
     Linear_REGRESSION = 'Linear_REGRESSION'
+    Conv_LSTM = 'Conv_LSTM'
     models_name = [
         CNN,
         LSTM,
@@ -65,6 +66,7 @@ class Config:
         # DT_REGRESSOR,
         # XGB_REGRESSOR,
         # Linear_REGRESSION,
+        # Conv_LSTM,
     ]
     # series type
     univariate = 'univariate'
@@ -103,3 +105,5 @@ class Config:
     MAPE = 'MAPE'
     R2 = 'R2'
     metrics_name = [MAE, MSE, RMSE, MAPE, R2]
+
+    n_subsequences = 2

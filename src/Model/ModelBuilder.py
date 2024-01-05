@@ -1,4 +1,5 @@
-from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidirectional, GRU, Dropout, SimpleRNN
+from keras.layers import Dense, Flatten, Input, Conv1D, MaxPooling1D, LSTM, Bidirectional, GRU, Dropout, SimpleRNN, \
+    ConvLSTM2D
 from keras.models import Model
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import LinearRegression
@@ -190,6 +191,22 @@ class ModelBuilder:
         return DecisionTreeRegressor(random_state=Config.random_state)
 
     @staticmethod
+    def get_Conv_LSTM_model(n_features, n_steps=Config.n_steps, dropout_rate=Config.dropout_rate,
+                            n_seq=Config.n_subsequences):
+        # define model
+        visible = Input(shape=(n_seq, 1, n_steps, n_features))
+        cnn = ConvLSTM2D(filters=64, kernel_size=(1, 2), activation='relu')(visible)
+        cnn = Flatten()(cnn)
+        cnn = Dense(50, activation='relu')(cnn)
+        cnn = Dropout(dropout_rate)(cnn)
+        # define outputs dynamically based on n_features
+        outputs = [Dense(1)(cnn) for _ in range(n_features)]
+        # tie together
+        model = Model(inputs=visible, outputs=outputs)
+        model.compile(optimizer='adam', loss='mse')
+        return model
+
+    @staticmethod
     def getModel(model_name, n_features):
         if model_name == Config.CNN:
             model = ModelBuilder.get_multi_output_CNN_model(n_features)
@@ -219,6 +236,8 @@ class ModelBuilder:
             model = ModelBuilder.get_dt_regressor_model()
         elif model_name == Config.Linear_REGRESSION:
             model = ModelBuilder.get_linear_regression_model()
+        elif model_name == Config.Conv_LSTM:
+            model = ModelBuilder.get_Conv_LSTM_model(n_features)
         else:
             raise Exception("model name not recognized")
         return model
