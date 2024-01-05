@@ -1,5 +1,6 @@
 import numpy as np
 from flask import jsonify
+from itertools import combinations
 
 
 class Helper:
@@ -85,3 +86,27 @@ class Helper:
 
         # Return both the indexes of the minimum and maximum numbers
         return min_indexes, max_indexes
+
+    @staticmethod
+    def extract_combinations(input_array):
+        result = []
+
+        # Generate combinations of different lengths
+        for r in range(2, len(input_array) + 1):
+            # Get combinations of length r
+            for combo in combinations(input_array, r):
+                # Check if the combination contains unique and non-singleton elements
+                if len(set(combo)) == len(combo) and len(combo) > 1:
+                    result.append(list(combo))
+
+        return result
+
+    @staticmethod
+    def flatten_list(nested_list):
+        flat_list = []
+        for sublist in nested_list:
+            if isinstance(sublist, list):
+                flat_list.extend(Helper.flatten_list(sublist))
+            else:
+                flat_list.append(sublist)
+        return flat_list

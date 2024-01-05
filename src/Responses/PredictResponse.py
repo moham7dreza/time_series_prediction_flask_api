@@ -59,7 +59,7 @@ class PredictResponse:
         return results, metrics
 
     @staticmethod
-    def add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble):
+    def add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble, apply_combinations=False):
         ensemble = None
         top_models = []
         for label, data in metrics.items():
@@ -74,21 +74,30 @@ class PredictResponse:
             break
 
         if len(top_models) >= 2:
-            for label, data in results.items():
-                for model, prediction in data['datasets'].items():
-                    # for example convert 'M-CNN-Predict' to 'M-CNN'
-                    model = '-'.join(model.split('-')[:-1])
-                    if model in top_models:
-                        # train_point = round(len(data['actuals']) - (len(data['actuals']) * Config.test_size))
-                        # test_predictions = prediction[train_point:]
-                        if ensemble is None:
-                            ensemble = np.array(prediction)
-                        else:
-                            ensemble += np.array(prediction)
-                if ensemble is not None:
-                    ensemble /= len(top_models)
-                    if results.get(label, {}):
-                        ensemble_title = '-'.join(top_models) + '-(Ensembled)-Predict'
-                        results[label]['datasets'][ensemble_title] = ensemble.tolist()
+            if apply_combinations:
+                combinations = Helper.extract_combinations(top_models)
+                for top_models_comb in combinations:
+                    PredictResponse.add_ensemble_to_response(ensemble, results, top_models_comb)
+            else:
+                PredictResponse.add_ensemble_to_response(ensemble, results, top_models)
 
         return results, metrics
+
+    @staticmethod
+    def add_ensemble_to_response(ensemble, results, top_models):
+        for label, data in results.items():
+            for model, prediction in data['datasets'].items():
+                # for example convert 'M-CNN-Predict' to 'M-CNN'
+                model = '-'.join(model.split('-')[:-1])
+                if model in top_models:
+                    # train_point = round(len(data['actuals']) - (len(data['actuals']) * Config.test_size))
+                    # test_predictions = prediction[train_point:]
+                    if ensemble is None:
+                        ensemble = np.array(prediction)
+                    else:
+                        ensemble += np.array(prediction)
+            if ensemble is not None:
+                ensemble /= len(top_models)
+                if results.get(label, {}):
+                    ensemble_title = '-'.join(top_models) + '-(Ensembled)-Predict'
+                    results[label]['datasets'][ensemble_title] = ensemble.tolist()

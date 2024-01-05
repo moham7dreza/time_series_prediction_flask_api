@@ -11,3 +11,4 @@ xgboost==1.6.1
 yfinance==0.2.32
 python-dotenv==1.0.0
 matplotlib==3.8.0
+more-itertools==9.0.0

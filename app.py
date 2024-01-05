@@ -1,15 +1,14 @@
-from flask import Flask, jsonify, request, redirect, url_for
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 
 from src.Config.Config import Config
+from src.Config.app import Config as appConfig
 from src.Data.DataLoader import DataLoader
 from src.Helper.Helper import Helper
 from src.Migrations import db
 from src.Responses.DatasetResponse import DatasetResponse
 from src.Responses.PredictResponse import PredictResponse
-from src.Config.app import Config as appConfig
 from src.Services import PredictService
 
 app = Flask(__name__)
@@ -127,6 +126,7 @@ def make_prediction():
     requested_prices = requests.get('price')
     requested_metrics = requests.get('metric')
     n_top_models_to_ensemble = requests.get('n_top_models_to_ensemble')
+    apply_combinations = requests.get('apply_combinations')
 
     PredictService.create(requests)
 
@@ -135,7 +135,8 @@ def make_prediction():
     results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
                                                       requested_series, requested_metrics)
     if n_top_models_to_ensemble is not None:
-        results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble)
+        results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble,
+                                                                           apply_combinations)
 
     return jsonify(
         {
