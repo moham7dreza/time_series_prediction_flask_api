@@ -45,7 +45,7 @@ def get_datasets():
     requested_datasets = requests.get('dataset')
     requested_prices = requests.get('price')
 
-    datasets = DataLoader.get_datasets()
+    datasets = DataLoader.get_datasets_refactored()
 
     results = DatasetResponse.total_response(datasets, requested_datasets, requested_prices)
 

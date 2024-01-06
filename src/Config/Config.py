@@ -27,6 +27,7 @@ class Config:
     housing_file_name = 'Housing.Inv.from_2004.csv'
     gold_file_name = 'Lotus.Gold.Com.ETF_from_2017.csv'
     kh_gold_file_name = 'Kharazmi.Info._GOLD_from_2014.csv'
+    car_shargh_file_name = 'E..Kh..Shargh_from_2004.csv'
     # dataset titles
     titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold', ]
     Dollar = 'Dollar'
@@ -107,3 +108,11 @@ class Config:
     metrics_name = [MAE, MSE, RMSE, MAPE, R2]
 
     n_subsequences = 2
+
+    active_datasets = {
+        Dollar: dollar_file_name,
+        Car: car_shargh_file_name,
+        Gold: kh_gold_file_name,
+        Home: housing_file_name,
+        Oil: oil_file_name
+    }
