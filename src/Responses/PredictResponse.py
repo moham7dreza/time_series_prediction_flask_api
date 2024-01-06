@@ -78,19 +78,18 @@ class PredictResponse:
             if apply_combinations:
                 combinations = Helper.extract_combinations(top_models)
                 for top_models_comb in combinations:
-                    PredictResponse.add_ensemble_to_response(ensemble, results, top_models_comb)
+                    PredictResponse.calc_top_models_mean(ensemble, results, top_models_comb, metrics)
             else:
-                PredictResponse.add_ensemble_to_response(ensemble, results, top_models, metrics)
+                PredictResponse.calc_top_models_mean(ensemble, results, top_models, metrics)
 
         return results, metrics
 
     @staticmethod
-    def add_ensemble_to_response(ensemble, results, top_models, metrics):
+    def calc_top_models_mean(ensemble, results, top_models, metrics):
         for label, data in results.items():
-            if 0:
-                actuals = data['actuals']
-                train_point = round(len(actuals) - (len(actuals) * Config.test_size))
-                test_actuals = actuals[train_point:]
+            actuals = data['actuals']
+            train_point = round(len(actuals) - (len(actuals) * Config.test_size))
+            test_actuals = actuals[train_point:]
 
             for model, prediction in data['datasets'].items():
                 # for example convert 'M-CNN-Predict' to 'M-CNN'
@@ -102,20 +101,24 @@ class PredictResponse:
                         ensemble += np.array(prediction)
             if ensemble is not None:
                 ensemble /= len(top_models)
-                if 0:
-                    y_test = test_actuals
-                    test_predictions = ensemble.tolist()[train_point:]
-                    ensemble_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
 
-                    for metric_label, metric_data in metrics.items():
-                        for ensemble_metric_label, ensemble_metric_data in ensemble_metrics.items():
-                            # Dollar-<CLOSE> and MAE in Dollar-<CLOSE>-MAE
-                            if label in metric_label and ensemble_metric_label in metric_label:
-                                if metrics.get(metric_label, {}):
-                                    metrics[metric_label]['dataset'].append(ensemble_metric_data)
-                                    metrics[metric_label]['labels'].append('-'.join(top_models))
-                                break
+                PredictResponse.add_ensemble_metrics_to_response(ensemble, label, metrics, test_actuals, top_models,
+                                                                 train_point)
 
                 if results.get(label, {}):
                     ensemble_title = '-'.join(top_models) + '-(Ensembled)-Predict'
                     results[label]['datasets'][ensemble_title] = ensemble.tolist()
+
+    @staticmethod
+    def add_ensemble_metrics_to_response(ensemble, label, metrics, test_actuals, top_models, train_point):
+        y_test = np.array(test_actuals)
+        test_predictions = ensemble[train_point:]
+        ensemble_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
+        for metric_label, metric_data in metrics.items():
+            for ensemble_metric_label, ensemble_metric_data in ensemble_metrics.items():
+                # Dollar-<CLOSE> and MAE in Dollar-<CLOSE>-MAE
+                if label in metric_label and ensemble_metric_label in metric_label:
+                    if metrics.get(metric_label, {}):
+                        metrics[metric_label]['dataset'].append(ensemble_metric_data)
+                        metrics[metric_label]['labels'].append('-'.join(top_models))
+                    break
