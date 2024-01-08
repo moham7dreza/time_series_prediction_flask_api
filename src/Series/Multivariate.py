@@ -36,7 +36,8 @@ class Multivariate:
             # Define model
             model = ModelBuilder.getModel(model_name, n_features)
             # Fit model
-            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+            model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, batch_size=Config.batch_size,
+                      verbose=0)
 
             # Save the model
             model.save(model_path)

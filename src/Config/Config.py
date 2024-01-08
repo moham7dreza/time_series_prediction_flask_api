@@ -13,6 +13,7 @@ class Config:
     epochs_for_multivariate_series = 100
     epochs_for_univariate_series = 100
     dropout_rate = 0.2
+    batch_size = 32
     prediction_col = '<CLOSE>'
     local_csv_folder_path = './iran_stock'
     drive_csv_folder_path = '/content/drive/My Drive/iran_stock'
