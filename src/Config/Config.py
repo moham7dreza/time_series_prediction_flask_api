@@ -7,8 +7,8 @@ class Config:
     date_col = "<DTYYYYMMDD>"
     # start_date = '2017-06-10'
     start_date = '2014-01-07'
-    # end_date = '2022-12-03'
-    end_date = '2022-10-10'
+    end_date = '2022-05-16'
+    # end_date = '2023-12-05'
     n_steps = 3
     epochs_for_multivariate_series = 100
     epochs_for_univariate_series = 100
@@ -19,7 +19,8 @@ class Config:
     drive_model_folder_path = '/content/drive/My Drive/time_series_models'
     local_model_folder_path = './time_series_models'
     # 1. set csv dataset file names
-    dollar_file_name = 'dollar_tjgu_from_2012.csv'
+    # dollar_file_name = 'dollar_tjgu_from_2012.csv'
+    dollar_file_name = 'Dollar_tjgu_new_from_2012.csv'
     car_file_name = 'Iran.Khodro_from_2001.csv'
     am_car_file_name = 'Iran.Kh..A..M._from_2001.csv'
     oil_file_name = 'S_Parsian.Oil&Gas_from_2012.csv'
