@@ -103,7 +103,7 @@ The following datasets from the Iran market were used for prediction:
 - `Dollar`
 - `Car`
 - `Home`
-- `Gold`
+- `Tech`
 - `Oil`
 
 ### Data Preprocessing

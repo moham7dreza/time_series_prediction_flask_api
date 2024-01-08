@@ -26,16 +26,17 @@ class Config:
     home_file_name = 'Maskan.Invest_from_2014.csv'
     housing_file_name = 'Housing.Inv.from_2004.csv'
     gold_file_name = 'Lotus.Gold.Com.ETF_from_2017.csv'
-    kh_gold_file_name = 'Kharazmi.Info._GOLD_from_2014.csv'
+    kh_info_file_name = 'Kharazmi.Info._TECH_from_2014.csv'
     car_shargh_file_name = 'E..Kh..Shargh_from_2004.csv'
     # dataset titles
-    titles = ['Dollar', 'Home', 'Oil', 'Car', 'Gold', ]
     Dollar = 'Dollar'
     Home = 'Home'
     Oil = 'Oil'
     Car = 'Car'
     Gold = 'Gold'
-    datasets_name = [Dollar, Home, Oil, Car, Gold]
+    Tech = 'Tech'
+
+    datasets_name = [Dollar, Home, Oil, Car, Tech]
     # model names
     CNN = 'CNN'
     LSTM = 'LSTM'
@@ -112,7 +113,7 @@ class Config:
     active_datasets = {
         Dollar: dollar_file_name,
         Car: car_shargh_file_name,
-        Gold: kh_gold_file_name,
+        Tech: kh_info_file_name,
         Home: housing_file_name,
         Oil: oil_file_name
     }

@@ -130,7 +130,7 @@ def make_prediction():
 
     PredictService.create(requests)
 
-    datasets = DataLoader.get_datasets()
+    datasets = DataLoader.get_datasets_refactored()
 
     results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
                                                       requested_series, requested_metrics)
