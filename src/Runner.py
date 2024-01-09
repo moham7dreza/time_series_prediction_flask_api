@@ -98,14 +98,16 @@ class Runner:
                 # }
                 # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
                 results['datasets']['U-' + model + '-Predict'] = predictions
-                for metric in Config.metrics_name:
-                    if metric in metrics:
-                        metricLabel = label + '-' + metric
-                        if not metricsResult.get(metricLabel, {}):
-                            metricsResult[metricLabel] = {'labels': [], 'dataset': []}
-                        if 'U-' + model not in metricsResult[metricLabel]['labels']:
-                            metricsResult[metricLabel]['dataset'].append(test_metrics[metric])
-                            metricsResult[metricLabel]['labels'].append('U-' + model)
+                if len(metrics) > 0:
+                    for metric in Config.metrics_name:
+                        if metric in metrics:
+                            metricLabel = label + '-' + metric
+                            if not metricsResult.get(metricLabel, {}):
+                                metricsResult[metricLabel] = {'labels': [], 'dataset': []}
+                            if 'U-' + model not in metricsResult[metricLabel]['labels']:
+                                metricsResult[metricLabel]['dataset'].append(test_metrics[metric])
+                                metricsResult[metricLabel]['labels'].append('U-' + model)
+
         return results, metricsResult
 
     @staticmethod
