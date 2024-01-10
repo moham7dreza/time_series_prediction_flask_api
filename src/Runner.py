@@ -1,3 +1,4 @@
+import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 from src.Config.Config import Config
@@ -65,28 +66,33 @@ class Runner:
                 dataset = [entry[price] for entry in data_mapping.values()]
                 dataset = scaler.fit_transform(dataset)
                 dates = list(data_mapping.keys())[:len(dataset) - int(Config.n_steps)]
-                results[model][price] = Univariate.splitted_univariate_series(model, dataset, scaler, dates)
+                results[model][price] = Univariate.splitted_univariate_series(model, dataset, scaler)
 
         return results
 
     @staticmethod
-    def run_for_univariate_series_ir_spiltted_price(dataset, models, price, metrics, label, metricsResult):
+    def run_for_univariate_series_ir_spiltted_price(dataset, models, price, metrics, label, metricsResult,
+                                                    n_predict_future_days):
         scaler = MinMaxScaler(feature_range=(0, 1))
         with_out_n_steps_point = len(dataset) - int(Config.n_steps)
         actuals = [round(data, 2) for data in dataset[price].tolist()][:with_out_n_steps_point]
 
-        dates = dataset.index[:with_out_n_steps_point]
+        dates = dataset.index[:with_out_n_steps_point].tolist()
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        results = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+        future_dates = pd.date_range(start=Config.end_date, periods=n_predict_future_days + 1).tolist()
+
+        results = {'labels': dates + future_dates, 'datasets': {}, 'actuals': actuals}
 
         for model in Config.models_name:
             if model in models:
                 # print(f'[DEBUG] - in univariate of {model}')
-                actuals, predictions, test_metrics = Univariate.splitted_univariate_series(model,
-                                                                                           dataset,
-                                                                                           scaler, dates, label)
+                actuals, predictions, test_metrics, future_prediction = Univariate.splitted_univariate_series(model,
+                                                                                                              dataset,
+                                                                                                              scaler,
+                                                                                                              label,
+                                                                                                              n_predict_future_days)
                 # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
                 # actual = {
                 #     index: {"date": data["date"], "actual": data["actual"]}
@@ -97,8 +103,8 @@ class Runner:
                 #     for index, data in data_mapping.items()
                 # }
                 # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
-                results['datasets']['U-' + model + '-Predict'] = predictions
-                if len(metrics) > 0:
+                results['datasets']['U-' + model + '-Predict'] = predictions + future_prediction
+                if metrics is not None and len(metrics) > 0:
                     for metric in Config.metrics_name:
                         if metric in metrics:
                             metricLabel = label + '-' + metric

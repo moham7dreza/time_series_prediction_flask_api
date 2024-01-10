@@ -49,7 +49,8 @@ class Univariate:
         return yhat
 
     @staticmethod
-    def splitted_univariate_series(model_name, dataset, scaler, dates, label, fit_regressor=False):
+    def splitted_univariate_series(model_name, dataset, scaler, label, n_predict_future_days,
+                                   fit_regressor=False):
         label = Helper.str_remove_flags(label)
         # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
         # print("dataset shape, type : ", dataset.shape, type(dataset))  # (287, 1) <class 'numpy.ndarray'>
@@ -104,6 +105,14 @@ class Univariate:
         loss = model.evaluate(X_test, y_test)
         # print("Model '{}' loss is : ".format(savedModelName), loss)
 
+        # future predictions
+        input_data = dataset[-Config.n_steps:]
+        for day in range(n_predict_future_days):
+            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+            input_data = np.vstack((input_data, future_prediction))
+        future_prediction = scaler.inverse_transform(input_data[Config.n_steps:])
+        future_prediction = np.round(np.squeeze(future_prediction), 2).tolist()
+
         # Evaluate the model
         train_predictions = model.predict(X_train)
         test_predictions = model.predict(X_test)
@@ -151,4 +160,4 @@ class Univariate:
         #     for index, (date, actual, predict) in enumerate(zip(dates, actuals[0], predictions))
         # }
 
-        return actuals, predictions, test_metrics
+        return actuals, predictions, test_metrics, future_prediction

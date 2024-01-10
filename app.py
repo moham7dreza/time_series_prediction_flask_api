@@ -127,13 +127,14 @@ def make_prediction():
     requested_metrics = requests.get('metric')
     n_top_models_to_ensemble = requests.get('n_top_models_to_ensemble')
     apply_combinations = requests.get('apply_combinations')
+    n_predict_future_days = requests.get('n_predict_future_days')
 
     PredictService.create(requests)
 
     datasets = DataLoader.get_datasets_refactored()
 
     results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
-                                                      requested_series, requested_metrics)
+                                                      requested_series, requested_metrics, n_predict_future_days)
     if n_top_models_to_ensemble > 0:
         results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble,
                                                                            apply_combinations)

@@ -33,7 +33,7 @@ class PredictResponse:
 
     @staticmethod
     def total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series,
-                       requested_metrics):
+                       requested_metrics, n_predict_future_days):
         results = {}
         metrics = {}
 
@@ -49,7 +49,8 @@ class PredictResponse:
                                                                                                      requested_models,
                                                                                                      price,
                                                                                                      requested_metrics,
-                                                                                                     label, metrics)
+                                                                                                     label, metrics,
+                                                                                                     n_predict_future_days)
                     if Config.multivariate in requested_series:
                         # print(f'[DEBUG] - in multivariate for {label}')
                         results, metrics = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models,
