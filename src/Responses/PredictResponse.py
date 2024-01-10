@@ -56,7 +56,8 @@ class PredictResponse:
                         results, metrics = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models,
                                                                                           price,
                                                                                           results, requested_datasets,
-                                                                                          requested_metrics, metrics)
+                                                                                          requested_metrics, metrics,
+                                                                                          n_predict_future_days)
 
         return results, metrics
 

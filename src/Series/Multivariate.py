@@ -51,7 +51,8 @@ class Multivariate:
         return yhat
 
     @staticmethod
-    def splitted_multivariate_series(model_name, dataset, scaler, dates, titles, price, fit_regressor=False):
+    def splitted_multivariate_series(model_name, dataset, scaler, titles, price, n_predict_future_days,
+                                     fit_regressor=False):
         price = Helper.str_remove_flags(price)
         # print("title : ", titles)
         # print("------------------------------------------------------")
@@ -116,6 +117,18 @@ class Multivariate:
         loss = model.evaluate(X_test, y_test_outputs)
         # print("Model '{}' loss is : ".format('M-' + model_name), loss)
         # print("------------------------------------------------------")
+        # future predictions
+
+        input_data = dataset[-Config.n_steps:]
+
+        for day in range(n_predict_future_days):
+            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+            input_data = np.vstack((input_data, np.squeeze(future_prediction)))
+
+        future_prediction = input_data[Config.n_steps:]
+        future_prediction = [future_prediction[:, i].reshape((future_prediction.shape[0], 1)) for i in range(n_features)]
+        future_prediction = np.round(np.squeeze(future_prediction), 2)
+
         # Evaluate the model
         train_predictions = model.predict(X_train)
         test_predictions = model.predict(X_test)
@@ -171,9 +184,9 @@ class Multivariate:
         # else:
         #     raise ValueError("Arrays must have the same length.")
         results = {
-            title: {"actual": actual.tolist(), "predict": predict.tolist()}
-            for title, actual, predict in
-            zip(titles, actuals, predictions)
+            title: {"actual": actual.tolist(), "predict": predict.tolist(), "future_predict": future_predict.tolist()}
+            for title, actual, predict, future_predict in
+            zip(titles, actuals, predictions, future_prediction)
         }
         metrics = {
             title: {metric: test_metrics[metric][index] for metric in test_metrics}

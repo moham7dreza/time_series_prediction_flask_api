@@ -117,7 +117,8 @@ class Runner:
         return results, metricsResult
 
     @staticmethod
-    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles, requested_metrics, metrics):
+    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles, requested_metrics, metrics,
+                                                n_predict_future_days):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         # print('[DEBUG] price : ', price)
@@ -126,11 +127,14 @@ class Runner:
         dates = datasets[Config.Dollar].index[:with_out_n_steps_point].tolist()
         datasetTitles = list(datasets.keys())
 
+        future_dates = pd.date_range(start=Config.end_date, periods=n_predict_future_days + 1).tolist()
+
         for model in Config.models_name:
             if model in models:
                 # print(f'[DEBUG] - in multivariate of {model}')
-                run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler, dates,
-                                                                              datasetTitles, price)
+                run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler,
+                                                                              datasetTitles, price,
+                                                                              n_predict_future_days)
                 # print('[DEBUG] - model : ', model)
 
                 for title in titles:
@@ -139,10 +143,11 @@ class Runner:
                     actuals = [round(data, 2) for data in datasets[title][price].tolist()][:with_out_n_steps_point]
 
                     if not results.get(label, {}):
-                        results[label] = {'labels': list(dates), 'datasets': {}, 'actuals': actuals}
+                        results[label] = {'labels': dates + future_dates, 'datasets': {}, 'actuals': actuals}
 
                     # results[label]['datasets']['M-' + model + '-Actual'] = run[title]['actual'] TODO actuals removed
-                    results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict']
+                    results[label]['datasets']['M-' + model + '-Predict'] = run[title]['predict'] + run[title][
+                        'future_predict']
                     # results[label]['metrics']['M-' + model] = {
                     #     'MAE': run[title]['mae'],
                     #     'MAPE': run[title]['mape'],
