@@ -106,12 +106,15 @@ class Univariate:
         # print("Model '{}' loss is : ".format(savedModelName), loss)
 
         # future predictions
-        input_data = dataset[-Config.n_steps:]
-        for day in range(n_predict_future_days):
-            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
-            input_data = np.vstack((input_data, future_prediction))
-        future_prediction = scaler.inverse_transform(input_data[Config.n_steps:])
-        future_prediction = np.round(np.squeeze(future_prediction), 2).tolist()
+        if n_predict_future_days > 0:
+            input_data = dataset[-Config.n_steps:]
+            for day in range(n_predict_future_days):
+                future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+                input_data = np.vstack((input_data, future_prediction))
+            future_prediction = scaler.inverse_transform(input_data[Config.n_steps:])
+            future_prediction = np.round(np.squeeze(future_prediction), 2).tolist()
+        else:
+            future_prediction = []
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
