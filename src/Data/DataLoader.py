@@ -109,6 +109,13 @@ class DataLoader:
         dataset = dataset.set_index(date_col)
         # print(dataset.dtypes)
 
+        if Config.check_for_datasets_date_range:
+            # Check if the date range is present in the DataFrame
+            date_range_present = ((dataset.index.min() <= pd.to_datetime(PredictionDTO.start_date))
+                                  & (dataset.index.max() >= pd.to_datetime(PredictionDTO.end_date)))
+            if not date_range_present:
+                raise ValueError('selected date range not exists')
+
         dataset = dataset.resample('W-Sat').mean().ffill()
         # print(dataset)
 
