@@ -82,7 +82,7 @@ class DataLoader:
         return hstack([np.round(seq.reshape(len(seq), 1), 2) for seq in sequences]), scaler
 
     @staticmethod
-    def data_preprocessing(dataset, date_col=Config.date_col, start_date=Config.start_date, end_date=Config.end_date,
+    def data_preprocessing(dataset, PredictionDTO, date_col=Config.date_col,
                            format=True):
         # sort by date
         dataset = dataset.sort_values(by=date_col)
@@ -112,7 +112,7 @@ class DataLoader:
         dataset = dataset.resample('W-Sat').mean().ffill()
         # print(dataset)
 
-        dataset = dataset.loc[start_date:end_date]
+        dataset = dataset.loc[PredictionDTO.start_date:PredictionDTO.end_date]
         # print(dataset)
 
         return dataset
@@ -158,7 +158,7 @@ class DataLoader:
         return datasets
 
     @staticmethod
-    def get_datasets_refactored():
+    def get_datasets_refactored(PredictionDTO):
         datasets = {}
 
         # 1. Get all active datasets
@@ -173,9 +173,9 @@ class DataLoader:
 
             # 3. Perform data preprocessing
             if dataset_name == Config.Dollar:
-                dataset = DataLoader.data_preprocessing(dataset, format=False)
+                dataset = DataLoader.data_preprocessing(dataset, PredictionDTO, format=False)
             else:
-                dataset = DataLoader.data_preprocessing(dataset)
+                dataset = DataLoader.data_preprocessing(dataset, PredictionDTO)
 
             # 4. Add dataset to the dictionary
             datasets[dataset_name] = dataset

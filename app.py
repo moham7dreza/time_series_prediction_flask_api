@@ -21,6 +21,7 @@ migrate = Migrate(app, db)
 class PredictionDTO:
     def __init__(self):
         requests = request.get_json()
+
         self.n_steps = requests.get("n_steps")
         self.datasets = requests.get("dataset")
         self.models = requests.get("model")
@@ -30,8 +31,8 @@ class PredictionDTO:
         self.n_top_models_to_ensemble = requests.get("n_top_models_to_ensemble")
         self.apply_combinations = requests.get("apply_combinations")
         self.n_predict_future_days = requests.get("n_predict_future_days")
-        self.start_date = requests.get("start_date")
-        self.end_date = requests.get("end_date")
+        self.start_date = requests.get("startDate")
+        self.end_date = requests.get("endDate")
 
 
 @app.route('/')
@@ -56,14 +57,11 @@ def last_record():
 
 @app.route('/datasets', methods=['POST'])
 def get_datasets():
-    requests = request.get_json()
+    DTO = PredictionDTO()
+    print(DTO.start_date, DTO.end_date)
+    datasets = DataLoader.get_datasets_refactored(DTO)
 
-    requested_datasets = requests.get('dataset')
-    requested_prices = requests.get('price')
-
-    datasets = DataLoader.get_datasets_refactored()
-
-    results = DatasetResponse.total_response(datasets, requested_datasets, requested_prices)
+    results = DatasetResponse.total_response(datasets, DTO)
 
     return jsonify(
         {
@@ -139,7 +137,7 @@ def make_prediction():
 
     PredictService.create(requests)
 
-    datasets = DataLoader.get_datasets_refactored()
+    datasets = DataLoader.get_datasets_refactored(DTO)
 
     results, metrics = PredictResponse.total_response(datasets, DTO)
 

@@ -6,7 +6,7 @@ from src.Config.Config import Config
 class DataSampler:
     # split a multivariate sequence into samples
     @staticmethod
-    def split_sequences(series_type, sequences, n_steps=Config.n_steps):
+    def split_sequences(series_type, sequences, n_steps):
         X, y = list(), list()
         for i in range(len(sequences)):
             # find the end of this pattern
@@ -26,7 +26,7 @@ class DataSampler:
         return array(X), array(y)
 
     @staticmethod
-    def split_sequences_splitted(series_type, sequences, n_steps=Config.n_steps):
+    def split_sequences_splitted(series_type, sequences, n_steps):
         X, y = list(), list()
         for i in range(len(sequences)):
             # find the end of this pattern
