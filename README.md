@@ -2,6 +2,8 @@
 
 Welcome to the API App powered by Flask and Python! This application serves as a backend API that interacts with a MySQL database and provides data endpoints for a React front-end application.
 
+![Welcome](./docs/img.png)
+
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
   1. [Clone the Repository]()

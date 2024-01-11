@@ -33,7 +33,10 @@ class PredictionDTO:
         self.n_predict_future_days = requests.get("n_predict_future_days")
         self.start_date = requests.get("startDate")
         self.end_date = requests.get("endDate")
-        self.test_size = requests.get("test_size") / 100
+        try:
+            self.test_size = requests.get("test_size") / 100
+        except (TypeError, ValueError):
+            self.test_size = None
 
 
 @app.route('/')
