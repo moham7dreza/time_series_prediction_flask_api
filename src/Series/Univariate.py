@@ -173,7 +173,8 @@ class Univariate:
 
     @staticmethod
     def extract_saved_model_name(PredictionDTO, label, model_name):
-        savedModelName = ('U-' + model_name + '-' + label + '-' + str(PredictionDTO.n_steps) + '-steps'
+        savedModelName = ('U-' + model_name + '-' + label + '-' + str(PredictionDTO.n_steps) + '-steps-'
+                          + str(int(PredictionDTO.test_size * 100)) + '%-test'
                           + '-from-' + PredictionDTO.start_date.replace('-', '')
                           + '-to-' + PredictionDTO.end_date.replace('-', ''))
         return savedModelName

@@ -208,7 +208,8 @@ class Multivariate:
 
     @staticmethod
     def extract_saved_model_name(PredictionDTO, price, model_name):
-        savedModelName = ('M-' + model_name + '-' + price + '-' + str(PredictionDTO.n_steps) + '-steps'
+        savedModelName = ('M-' + model_name + '-' + price + '-' + str(PredictionDTO.n_steps) + '-steps-'
+                          + str(int(PredictionDTO.test_size * 100)) + '%-test'
                           + '-from-' + PredictionDTO.start_date.replace('-', '')
                           + '-to-' + PredictionDTO.end_date.replace('-', ''))
         return savedModelName
