@@ -32,44 +32,44 @@ class PredictResponse:
         return results
 
     @staticmethod
-    def total_response(datasets, requested_datasets, requested_models, requested_prices, requested_series,
-                       requested_metrics, n_predict_future_days):
+    def total_response(datasets, PredictionDTO):
         results = {}
         metrics = {}
 
         for title, dataset in datasets.items():
             for price in Config.prices_name:
-                if price in requested_prices and title in requested_datasets:
+                if price in PredictionDTO.prices and title in PredictionDTO.datasets:
                     label = title + '-' + price
                     # print(f'[DEBUG] - label is for {price} : ', label)
 
-                    if Config.univariate in requested_series:
+                    if Config.univariate in PredictionDTO.series:
                         # print(f'[DEBUG] - in univariate for {label}')
                         results[label], metrics = Runner.run_for_univariate_series_ir_spiltted_price(dataset,
-                                                                                                     requested_models,
+                                                                                                     PredictionDTO,
                                                                                                      price,
-                                                                                                     requested_metrics,
-                                                                                                     label, metrics,
-                                                                                                     n_predict_future_days)
-                    if Config.multivariate in requested_series:
+                                                                                                     label,
+                                                                                                     metrics
+                                                                                                     )
+                    if Config.multivariate in PredictionDTO.series:
                         # print(f'[DEBUG] - in multivariate for {label}')
-                        results, metrics = Runner.run_for_multivariate_series_ir_spiltted(datasets, requested_models,
+                        results, metrics = Runner.run_for_multivariate_series_ir_spiltted(datasets,
+                                                                                          PredictionDTO,
                                                                                           price,
-                                                                                          results, requested_datasets,
-                                                                                          requested_metrics, metrics,
-                                                                                          n_predict_future_days)
+                                                                                          results,
+                                                                                          metrics,
+                                                                                          )
 
         return results, metrics
 
     @staticmethod
-    def add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble, apply_combinations=False):
+    def add_ensemble_models_to_response(results, metrics, PredictionDTO):
         ensemble = None
         top_models = []
         for label, data in metrics.items():
             # for ensemble need to have at least 2 models
             if len(data['dataset']) < 2:
                 break
-            min_indexes, max_indexes = Helper.find_min_max_indexes(data['dataset'], n_top_models_to_ensemble)
+            min_indexes, max_indexes = Helper.find_min_max_indexes(data['dataset'], PredictionDTO.n_top_models_to_ensemble)
             if Config.MAE in label or Config.MAPE in label or Config.MSE in label or Config.RMSE in label:
                 top_models = [data['labels'][index] for index in min_indexes]
             elif Config.R2 in label:
@@ -77,7 +77,7 @@ class PredictResponse:
             break
 
         if len(top_models) >= 2:
-            if apply_combinations:
+            if PredictionDTO.apply_combinations:
                 combinations = Helper.extract_combinations(top_models)
                 for top_models_comb in combinations:
                     PredictResponse.calc_top_models_mean(ensemble, results, top_models_comb, metrics)

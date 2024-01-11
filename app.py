@@ -18,6 +18,22 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
+class PredictionDTO:
+    def __init__(self):
+        requests = request.get_json()
+        self.n_steps = requests.get("n_steps")
+        self.datasets = requests.get("dataset")
+        self.models = requests.get("model")
+        self.series = requests.get("serie")
+        self.prices = requests.get("price")
+        self.metrics = requests.get("metric")
+        self.n_top_models_to_ensemble = requests.get("n_top_models_to_ensemble")
+        self.apply_combinations = requests.get("apply_combinations")
+        self.n_predict_future_days = requests.get("n_predict_future_days")
+        self.start_date = requests.get("start_date")
+        self.end_date = requests.get("end_date")
+
+
 @app.route('/')
 def main():
     return jsonify(
@@ -119,25 +135,16 @@ def make_prediction():
 
     requests = request.get_json()
 
-    Config.setNSteps(requests.get('n_steps'))
-    requested_datasets = requests.get('dataset')
-    requested_models = requests.get('model')
-    requested_series = requests.get('serie')
-    requested_prices = requests.get('price')
-    requested_metrics = requests.get('metric')
-    n_top_models_to_ensemble = requests.get('n_top_models_to_ensemble')
-    apply_combinations = requests.get('apply_combinations')
-    n_predict_future_days = requests.get('n_predict_future_days')
+    DTO = PredictionDTO()
 
     PredictService.create(requests)
 
     datasets = DataLoader.get_datasets_refactored()
 
-    results, metrics = PredictResponse.total_response(datasets, requested_datasets, requested_models, requested_prices,
-                                                      requested_series, requested_metrics, n_predict_future_days)
-    if n_top_models_to_ensemble > 0:
-        results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, n_top_models_to_ensemble,
-                                                                           apply_combinations)
+    results, metrics = PredictResponse.total_response(datasets, DTO)
+
+    if DTO.n_top_models_to_ensemble > 0:
+        results, metrics = PredictResponse.add_ensemble_models_to_response(results, metrics, DTO)
 
     return jsonify(
         {

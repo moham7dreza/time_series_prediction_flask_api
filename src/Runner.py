@@ -71,8 +71,7 @@ class Runner:
         return results
 
     @staticmethod
-    def run_for_univariate_series_ir_spiltted_price(dataset, models, price, metrics, label, metricsResult,
-                                                    n_predict_future_days):
+    def run_for_univariate_series_ir_spiltted_price(dataset, PredictionDTO, price, label, metrics):
         scaler = MinMaxScaler(feature_range=(0, 1))
         with_out_n_steps_point = len(dataset) - int(Config.n_steps)
         actuals = [round(data, 2) for data in dataset[price].tolist()][:with_out_n_steps_point]
@@ -81,18 +80,18 @@ class Runner:
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        future_dates = pd.date_range(start=Config.end_date, periods=n_predict_future_days + 1).tolist()
+        future_dates = pd.date_range(start=Config.end_date, periods=PredictionDTO.n_predict_future_days + 1).tolist()
 
         results = {'labels': dates + future_dates, 'datasets': {}, 'actuals': actuals}
 
         for model in Config.models_name:
-            if model in models:
+            if model in PredictionDTO.models:
                 # print(f'[DEBUG] - in univariate of {model}')
                 actuals, predictions, test_metrics, future_prediction = Univariate.splitted_univariate_series(model,
                                                                                                               dataset,
                                                                                                               scaler,
                                                                                                               label,
-                                                                                                              n_predict_future_days)
+                                                                                                              PredictionDTO.n_predict_future_days)
                 # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
                 # actual = {
                 #     index: {"date": data["date"], "actual": data["actual"]}
@@ -104,21 +103,20 @@ class Runner:
                 # }
                 # results['datasets']['U-' + model + '-Actual'] = actuals TODO actuals removed
                 results['datasets']['U-' + model + '-Predict'] = predictions + future_prediction
-                if metrics is not None and len(metrics) > 0:
+                if PredictionDTO.metrics is not None and len(PredictionDTO.metrics) > 0:
                     for metric in Config.metrics_name:
-                        if metric in metrics:
+                        if metric in PredictionDTO.metrics:
                             metricLabel = label + '-' + metric
-                            if not metricsResult.get(metricLabel, {}):
-                                metricsResult[metricLabel] = {'labels': [], 'dataset': []}
-                            if 'U-' + model not in metricsResult[metricLabel]['labels']:
-                                metricsResult[metricLabel]['dataset'].append(test_metrics[metric])
-                                metricsResult[metricLabel]['labels'].append('U-' + model)
+                            if not metrics.get(metricLabel, {}):
+                                metrics[metricLabel] = {'labels': [], 'dataset': []}
+                            if 'U-' + model not in metrics[metricLabel]['labels']:
+                                metrics[metricLabel]['dataset'].append(test_metrics[metric])
+                                metrics[metricLabel]['labels'].append('U-' + model)
 
-        return results, metricsResult
+        return results, metrics
 
     @staticmethod
-    def run_for_multivariate_series_ir_spiltted(datasets, models, price, results, titles, requested_metrics, metrics,
-                                                n_predict_future_days):
+    def run_for_multivariate_series_ir_spiltted(datasets, PredictionDTO, price, results, metrics):
         # Normalize the data
         scaler = MinMaxScaler(feature_range=(0, 1))
         # print('[DEBUG] price : ', price)
@@ -127,17 +125,17 @@ class Runner:
         dates = datasets[Config.Dollar].index[:with_out_n_steps_point].tolist()
         datasetTitles = list(datasets.keys())
 
-        future_dates = pd.date_range(start=Config.end_date, periods=n_predict_future_days + 1).tolist()
+        future_dates = pd.date_range(start=Config.end_date, periods=PredictionDTO.n_predict_future_days + 1).tolist()
 
         for model in Config.models_name:
-            if model in models:
+            if model in PredictionDTO.models:
                 # print(f'[DEBUG] - in multivariate of {model}')
                 run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler,
                                                                               datasetTitles, price,
-                                                                              n_predict_future_days)
+                                                                              PredictionDTO.n_predict_future_days)
                 # print('[DEBUG] - model : ', model)
 
-                for title in titles:
+                for title in PredictionDTO.datasets:
                     label = title + '-' + price
                     # print('[DEBUG] - label : ', label)
                     actuals = [round(data, 2) for data in datasets[title][price].tolist()][:with_out_n_steps_point]
@@ -157,7 +155,7 @@ class Runner:
                     # }
 
                     for metric in Config.metrics_name:
-                        if metric in requested_metrics:
+                        if metric in PredictionDTO.metrics:
                             # print('[DEBUG] - metrics before : ', metrics)
                             metricLabel = label + '-' + metric
                             # print('[DEBUG] - metric label', metricLabel)
