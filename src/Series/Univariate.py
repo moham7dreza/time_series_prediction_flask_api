@@ -92,12 +92,12 @@ class Univariate:
             # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
-            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps)
+            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps, PredictionDTO.dropout_rate)
             # Fit model
             if fit_regressor:
                 model.fit(X_train, y_train)
             else:
-                model.fit(X_train, y_train, epochs=Config.epochs_for_univariate_series, batch_size=32)
+                model.fit(X_train, y_train, epochs=PredictionDTO.epochs, batch_size=PredictionDTO.batch_size)
 
             # Save the model
             model.save(model_path)
@@ -129,13 +129,8 @@ class Univariate:
         # Calculate errors
         # train_metrics = Evaluation.calculateMetricsUnivariate(y_train, train_predictions)
         test_metrics = Evaluation.calculateMetricsUnivariate(y_test, test_predictions)
-        # y_train shape : (227, 1),  y_test shape : (57, 1) -> merge shape (284, 1)
-        actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
-        # (227, 1) (57, 1) -> merge shape (284, 1)
-        predictions = np.round(np.concatenate((train_predictions, test_predictions), axis=0), 2)
-        # print('actuals, predictions shape : ', actuals.shape, predictions.shape)  # (284, 1) (284, 1)
-        actuals = actuals.squeeze().tolist()
-        predictions = predictions.squeeze().tolist()
+
+        actuals, predictions = Univariate.transform_data(test_predictions, train_predictions, y_test, y_train)
         # print('actuals : ', actuals)
         # print('predictions : ', predictions)
         # print(len(dates), len(actuals[0]), len(predictions))
@@ -159,6 +154,17 @@ class Univariate:
         return actuals, predictions, test_metrics, future_prediction
 
     @staticmethod
+    def transform_data(test_predictions, train_predictions, y_test, y_train):
+        # y_train shape : (227, 1),  y_test shape : (57, 1) -> merge shape (284, 1)
+        actuals = np.round(np.concatenate((y_train, y_test), axis=0), 2)
+        # (227, 1) (57, 1) -> merge shape (284, 1)
+        predictions = np.round(np.concatenate((train_predictions, test_predictions), axis=0), 2)
+        # print('actuals, predictions shape : ', actuals.shape, predictions.shape)  # (284, 1) (284, 1)
+        actuals = actuals.squeeze().tolist()
+        predictions = predictions.squeeze().tolist()
+        return actuals, predictions
+
+    @staticmethod
     def get_future_predictions(PredictionDTO, dataset, model, n_features, scaler):
         if PredictionDTO.n_predict_future_days > 0:
             input_data = dataset[-Config.n_steps:]
@@ -173,8 +179,15 @@ class Univariate:
 
     @staticmethod
     def extract_saved_model_name(PredictionDTO, label, model_name):
-        savedModelName = ('U-' + model_name + '-' + label + '-' + str(PredictionDTO.n_steps) + '-steps-'
-                          + str(int(PredictionDTO.test_size * 100)) + '%-test'
-                          + '-from-' + PredictionDTO.start_date.replace('-', '')
-                          + '-to-' + PredictionDTO.end_date.replace('-', ''))
+        savedModelName = (
+                'U-' + model_name + '-' + label
+                + '-[' + PredictionDTO.start_date.replace('-', '')
+                + '-' + PredictionDTO.end_date.replace('-', '')
+                + ']-'
+                + str(PredictionDTO.n_steps) + '-steps-'
+                + str(int(PredictionDTO.test_size * 100)) + '%-test-'
+                + str(PredictionDTO.epochs) + '-epochs-'
+                + str(PredictionDTO.batch_size) + '-batches-'
+                + str(int(PredictionDTO.dropout_rate * 100)) + '%-dropout'
+        )
         return savedModelName

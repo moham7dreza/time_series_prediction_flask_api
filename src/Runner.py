@@ -80,7 +80,7 @@ class Runner:
         dataset = dataset[price].values.reshape(-1, 1)
         dataset = scaler.fit_transform(dataset)
 
-        future_dates = pd.date_range(start=Config.end_date, periods=PredictionDTO.n_predict_future_days + 1).tolist()
+        future_dates = pd.date_range(start=PredictionDTO.end_date, periods=PredictionDTO.n_predict_future_days + 1).tolist()
 
         results = {'labels': dates + future_dates, 'datasets': {}, 'actuals': actuals}
 

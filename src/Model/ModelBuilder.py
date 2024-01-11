@@ -11,7 +11,7 @@ from src.Config.Config import Config
 
 class ModelBuilder:
     @staticmethod
-    def get_multi_output_stacked_LSTM_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_stacked_LSTM_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         lstm = LSTM(100, activation='relu', return_sequences=True)(visible)
         lstm = Dropout(dropout_rate)(lstm)
@@ -27,7 +27,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_bi_LSTM_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_bi_LSTM_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         bi_lstm = Bidirectional(LSTM(100, activation='relu', return_sequences=True))(visible)
         bi_lstm = Dropout(dropout_rate)(bi_lstm)
@@ -43,7 +43,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_GRU_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_GRU_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         gru = GRU(100, activation='relu', return_sequences=True)(visible)
         gru = Dropout(dropout_rate)(gru)
@@ -59,7 +59,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_bi_GRU_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_bi_GRU_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         bi_gru = Bidirectional(GRU(100, activation='relu', return_sequences=True))(visible)
         bi_gru = Dropout(dropout_rate)(bi_gru)
@@ -75,7 +75,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_RNN_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_RNN_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         rnn = SimpleRNN(100, activation='relu', return_sequences=True)(visible)
         rnn = Dropout(dropout_rate)(rnn)
@@ -90,7 +90,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_bi_RNN_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_bi_RNN_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         rnn = Bidirectional(SimpleRNN(100, activation='relu', return_sequences=True))(visible)
         rnn = Dropout(dropout_rate)(rnn)
@@ -106,7 +106,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_ANN_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_ANN_model(n_features, n_steps, dropout_rate):
         visible = Input(shape=(n_steps, n_features))
         ann = Dense(100, activation='relu')(visible)
         ann = Dropout(dropout_rate)(ann)
@@ -122,7 +122,7 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def get_multi_output_CNN_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_CNN_model(n_features, n_steps, dropout_rate):
         # define model
         visible = Input(shape=(n_steps, n_features))
         cnn = Conv1D(filters=64, kernel_size=2, activation='relu')(visible)
@@ -142,7 +142,7 @@ class ModelBuilder:
     # architecture for an ANN, you can consider using Bidirectional with a recurrent layer followed by dense layers.
 
     @staticmethod
-    def get_multi_output_bi_ANN_model(n_features, n_steps, dropout_rate=Config.dropout_rate):
+    def get_multi_output_bi_ANN_model(n_features, n_steps, dropout_rate):
         # Define model
         visible = Input(shape=(n_steps, n_features))
 
@@ -191,7 +191,7 @@ class ModelBuilder:
         return DecisionTreeRegressor(random_state=Config.random_state)
 
     @staticmethod
-    def get_Conv_LSTM_model(n_features, n_steps, dropout_rate=Config.dropout_rate,
+    def get_Conv_LSTM_model(n_features, n_steps, dropout_rate,
                             n_seq=Config.n_subsequences):
         # define model
         visible = Input(shape=(n_seq, 1, n_steps, n_features))
@@ -207,25 +207,25 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def getModel(model_name, n_features, n_steps):
+    def getModel(model_name, n_features, n_steps, dropout_rate):
         if model_name == Config.CNN:
-            model = ModelBuilder.get_multi_output_CNN_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_CNN_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.LSTM:
-            model = ModelBuilder.get_multi_output_stacked_LSTM_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_stacked_LSTM_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.bi_LSTM:
-            model = ModelBuilder.get_multi_output_bi_LSTM_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_bi_LSTM_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.RNN:
-            model = ModelBuilder.get_multi_output_RNN_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_RNN_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.bi_RNN:
-            model = ModelBuilder.get_multi_output_bi_RNN_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_bi_RNN_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.GRU:
-            model = ModelBuilder.get_multi_output_GRU_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_GRU_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.bi_GRU:
-            model = ModelBuilder.get_multi_output_bi_GRU_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_bi_GRU_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.ANN:
-            model = ModelBuilder.get_multi_output_ANN_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_ANN_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.bi_ANN:
-            model = ModelBuilder.get_multi_output_bi_ANN_model(n_features, n_steps)
+            model = ModelBuilder.get_multi_output_bi_ANN_model(n_features, n_steps, dropout_rate)
         elif model_name == Config.RF_REGRESSOR:
             model = ModelBuilder.get_RF_Regressor_model()
         elif model_name == Config.GB_REGRESSOR:
@@ -237,7 +237,7 @@ class ModelBuilder:
         elif model_name == Config.Linear_REGRESSION:
             model = ModelBuilder.get_linear_regression_model()
         elif model_name == Config.Conv_LSTM:
-            model = ModelBuilder.get_Conv_LSTM_model(n_features, n_steps)
+            model = ModelBuilder.get_Conv_LSTM_model(n_features, n_steps, dropout_rate)
         else:
             raise Exception("model name not recognized")
         return model

@@ -33,10 +33,14 @@ class PredictionDTO:
         self.n_predict_future_days = requests.get("n_predict_future_days")
         self.start_date = requests.get("startDate")
         self.end_date = requests.get("endDate")
+        self.epochs = requests.get("epochs")
+        self.batch_size = requests.get("batch_size")
         try:
             self.test_size = requests.get("test_size") / 100
+            self.dropout_rate = requests.get("dropout_rate") / 100
         except (TypeError, ValueError):
             self.test_size = None
+            self.dropout_rate = None
 
 
 @app.route('/')
@@ -62,7 +66,7 @@ def last_record():
 @app.route('/datasets', methods=['POST'])
 def get_datasets():
     DTO = PredictionDTO()
-    print(DTO.start_date, DTO.end_date)
+
     datasets = DataLoader.get_datasets_refactored(DTO)
 
     results = DatasetResponse.total_response(datasets, DTO)

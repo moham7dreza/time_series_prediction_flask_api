@@ -106,7 +106,7 @@ class Multivariate:
             if fit_regressor:
                 model.fit(X, y_outputs)
             else:
-                model.fit(X, y_outputs, epochs=Config.epochs_for_multivariate_series, verbose=0)
+                model.fit(X, y_outputs, epochs=PredictionDTO.epochs, batch_size=PredictionDTO.batch_size)
 
             # Save the model
             model.save(model_path)
@@ -208,8 +208,15 @@ class Multivariate:
 
     @staticmethod
     def extract_saved_model_name(PredictionDTO, price, model_name):
-        savedModelName = ('M-' + model_name + '-' + price + '-' + str(PredictionDTO.n_steps) + '-steps-'
-                          + str(int(PredictionDTO.test_size * 100)) + '%-test'
-                          + '-from-' + PredictionDTO.start_date.replace('-', '')
-                          + '-to-' + PredictionDTO.end_date.replace('-', ''))
+        savedModelName = (
+                'M-' + model_name + '-' + price
+                + '-[' + PredictionDTO.start_date.replace('-', '')
+                + '-' + PredictionDTO.end_date.replace('-', '')
+                + ']-'
+                + str(PredictionDTO.n_steps) + '-steps-'
+                + str(int(PredictionDTO.test_size * 100)) + '%-test-'
+                + str(PredictionDTO.epochs) + '-epochs-'
+                + str(PredictionDTO.batch_size) + '-batches-'
+                + str(int(PredictionDTO.dropout_rate * 100)) + '%-dropout'
+        )
         return savedModelName
