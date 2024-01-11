@@ -49,14 +49,14 @@ class Univariate:
         return yhat
 
     @staticmethod
-    def splitted_univariate_series(model_name, dataset, scaler, label, n_predict_future_days,
+    def splitted_univariate_series(model_name, dataset, scaler, label, PredictionDTO,
                                    fit_regressor=False):
         label = Helper.str_remove_flags(label)
         # print(len(dates), len(dataset))  # 284 287 date = dataset with out last 3 steps
         # print("dataset shape, type : ", dataset.shape, type(dataset))  # (287, 1) <class 'numpy.ndarray'>
         # print("dataset : ", dataset)
         # split into samples
-        X, y = DataSampler.split_sequences(Config.univariate, dataset)
+        X, y = DataSampler.split_sequences(Config.univariate, dataset, PredictionDTO.n_steps)
         # print("X ,y shape and type : ", X.shape, y.shape, type(X), type(y))  # (284, 3, 1) (284, 1) <class 'numpy.ndarray'> <class 'numpy.ndarray'>
         # print('X : ', X)
         # print('y : ', y)
@@ -66,7 +66,7 @@ class Univariate:
         n_features = 1
         X = X.reshape((X.shape[0], X.shape[1], n_features))
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size,
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=PredictionDTO.test_size,
                                                             random_state=Config.random_state, shuffle=False)
         # print("X_train, X_test, y_train, y_test type : ", type(X_train), type(X_test), type(y_train), type(y_test))
         # <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'>
@@ -78,7 +78,8 @@ class Univariate:
         # print("y_test : ", y_test)
         # print("------------------------------------------------------")
         # Define the path for saving/loading the model
-        savedModelName = 'U-' + model_name + '-' + label
+        savedModelName = Univariate.extract_saved_model_name(PredictionDTO, label, model_name)
+
         if Config.colab:
             model_path = Config.drive_model_folder_path + '/{}.h5'.format(savedModelName)
         else:
@@ -91,7 +92,7 @@ class Univariate:
             # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
-            model = ModelBuilder.getModel(model_name, n_features)
+            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps)
             # Fit model
             if fit_regressor:
                 model.fit(X_train, y_train)
@@ -106,15 +107,7 @@ class Univariate:
         # print("Model '{}' loss is : ".format(savedModelName), loss)
 
         # future predictions
-        if n_predict_future_days > 0:
-            input_data = dataset[-Config.n_steps:]
-            for day in range(n_predict_future_days):
-                future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
-                input_data = np.vstack((input_data, future_prediction))
-            future_prediction = scaler.inverse_transform(input_data[Config.n_steps:])
-            future_prediction = np.round(np.squeeze(future_prediction), 2).tolist()
-        else:
-            future_prediction = []
+        future_prediction = Univariate.get_future_predictions(PredictionDTO, dataset, model, n_features, scaler)
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
@@ -164,3 +157,23 @@ class Univariate:
         # }
 
         return actuals, predictions, test_metrics, future_prediction
+
+    @staticmethod
+    def get_future_predictions(PredictionDTO, dataset, model, n_features, scaler):
+        if PredictionDTO.n_predict_future_days > 0:
+            input_data = dataset[-Config.n_steps:]
+            for day in range(PredictionDTO.n_predict_future_days):
+                future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+                input_data = np.vstack((input_data, future_prediction))
+            future_prediction = scaler.inverse_transform(input_data[Config.n_steps:])
+            future_prediction = np.round(np.squeeze(future_prediction), 2).tolist()
+        else:
+            future_prediction = []
+        return future_prediction
+
+    @staticmethod
+    def extract_saved_model_name(PredictionDTO, label, model_name):
+        savedModelName = ('U-' + model_name + '-' + label + '-' + str(PredictionDTO.n_steps) + '-steps'
+                          + '-from-' + PredictionDTO.start_date.replace('-', '')
+                          + '-to-' + PredictionDTO.end_date.replace('-', ''))
+        return savedModelName

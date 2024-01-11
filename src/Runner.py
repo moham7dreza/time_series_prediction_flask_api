@@ -91,7 +91,7 @@ class Runner:
                                                                                                               dataset,
                                                                                                               scaler,
                                                                                                               label,
-                                                                                                              PredictionDTO.n_predict_future_days)
+                                                                                                              PredictionDTO)
                 # print('metrics after run univariate : ', Evaluation.calculateMetrics(np.array(actuals), np.array(predictions)))
                 # actual = {
                 #     index: {"date": data["date"], "actual": data["actual"]}

@@ -207,25 +207,25 @@ class ModelBuilder:
         return model
 
     @staticmethod
-    def getModel(model_name, n_features):
+    def getModel(model_name, n_features, n_steps):
         if model_name == Config.CNN:
-            model = ModelBuilder.get_multi_output_CNN_model(n_features)
+            model = ModelBuilder.get_multi_output_CNN_model(n_features, n_steps)
         elif model_name == Config.LSTM:
-            model = ModelBuilder.get_multi_output_stacked_LSTM_model(n_features)
+            model = ModelBuilder.get_multi_output_stacked_LSTM_model(n_features, n_steps)
         elif model_name == Config.bi_LSTM:
-            model = ModelBuilder.get_multi_output_bi_LSTM_model(n_features)
+            model = ModelBuilder.get_multi_output_bi_LSTM_model(n_features, n_steps)
         elif model_name == Config.RNN:
-            model = ModelBuilder.get_multi_output_RNN_model(n_features)
+            model = ModelBuilder.get_multi_output_RNN_model(n_features, n_steps)
         elif model_name == Config.bi_RNN:
-            model = ModelBuilder.get_multi_output_bi_RNN_model(n_features)
+            model = ModelBuilder.get_multi_output_bi_RNN_model(n_features, n_steps)
         elif model_name == Config.GRU:
-            model = ModelBuilder.get_multi_output_GRU_model(n_features)
+            model = ModelBuilder.get_multi_output_GRU_model(n_features, n_steps)
         elif model_name == Config.bi_GRU:
-            model = ModelBuilder.get_multi_output_bi_GRU_model(n_features)
+            model = ModelBuilder.get_multi_output_bi_GRU_model(n_features, n_steps)
         elif model_name == Config.ANN:
-            model = ModelBuilder.get_multi_output_ANN_model(n_features)
+            model = ModelBuilder.get_multi_output_ANN_model(n_features, n_steps)
         elif model_name == Config.bi_ANN:
-            model = ModelBuilder.get_multi_output_bi_ANN_model(n_features)
+            model = ModelBuilder.get_multi_output_bi_ANN_model(n_features, n_steps)
         elif model_name == Config.RF_REGRESSOR:
             model = ModelBuilder.get_RF_Regressor_model()
         elif model_name == Config.GB_REGRESSOR:
@@ -237,7 +237,7 @@ class ModelBuilder:
         elif model_name == Config.Linear_REGRESSION:
             model = ModelBuilder.get_linear_regression_model()
         elif model_name == Config.Conv_LSTM:
-            model = ModelBuilder.get_Conv_LSTM_model(n_features)
+            model = ModelBuilder.get_Conv_LSTM_model(n_features, n_steps)
         else:
             raise Exception("model name not recognized")
         return model
