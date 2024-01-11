@@ -101,7 +101,7 @@ class Multivariate:
             # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
-            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps)
+            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps, PredictionDTO.dropout_rate)
             # Fit model TODO X or X_trait?
             if fit_regressor:
                 model.fit(X, y_outputs)
