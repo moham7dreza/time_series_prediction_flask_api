@@ -132,7 +132,7 @@ class Runner:
                 # print(f'[DEBUG] - in multivariate of {model}')
                 run, test_metrics = Multivariate.splitted_multivariate_series(model, stackedDataset, scaler,
                                                                               datasetTitles, price,
-                                                                              PredictionDTO.n_predict_future_days)
+                                                                              PredictionDTO)
                 # print('[DEBUG] - model : ', model)
 
                 for title in PredictionDTO.datasets:
@@ -155,7 +155,7 @@ class Runner:
                     # }
 
                     for metric in Config.metrics_name:
-                        if metric in PredictionDTO.metrics:
+                        if PredictionDTO.metrics is not None and metric in PredictionDTO.metrics:
                             # print('[DEBUG] - metrics before : ', metrics)
                             metricLabel = label + '-' + metric
                             # print('[DEBUG] - metric label', metricLabel)

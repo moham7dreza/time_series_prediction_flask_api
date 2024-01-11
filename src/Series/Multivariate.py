@@ -51,7 +51,7 @@ class Multivariate:
         return yhat
 
     @staticmethod
-    def splitted_multivariate_series(model_name, dataset, scaler, titles, price, n_predict_future_days,
+    def splitted_multivariate_series(model_name, dataset, scaler, titles, price, PredictionDTO,
                                      fit_regressor=False):
         price = Helper.str_remove_flags(price)
         # print("title : ", titles)
@@ -63,7 +63,7 @@ class Multivariate:
         # print("dates : ", np.array(dates))
         # print("------------------------------------------------------")
         # convert into input/output
-        X, y = DataSampler.split_sequences(Config.multivariate, dataset)
+        X, y = DataSampler.split_sequences(Config.multivariate, dataset, PredictionDTO.n_steps)
         # print("X ,y shape and type : ", X.shape, y.shape, type(X), type(y))  # (284, 3, 5) (284, 5)
         # the dataset knows the number of features
         n_features = X.shape[2]
@@ -75,7 +75,7 @@ class Multivariate:
         # print('y_outputs shape and type : ', np.array(y_outputs).shape, type(y_outputs))  # (5, 284, 1)
         # print('y_outputs : ', np.array(y_outputs))
         # print("------------------------------------------------------")
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=Config.test_size,
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=PredictionDTO.test_size,
                                                             random_state=Config.random_state, shuffle=False)
         # print("X_train, X_test, y_train, y_test type : ", type(X_train), type(X_test), type(y_train), type(y_test))
         # <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'> <class 'numpy.ndarray'>
@@ -87,7 +87,8 @@ class Multivariate:
         # print("y_test : ", y_test)
         # print("------------------------------------------------------")
         # Define the path for saving/loading the model
-        savedModelName = 'M-' + model_name + '-' + price
+        savedModelName = Multivariate.extract_saved_model_name(PredictionDTO, price, model_name)
+
         if Config.colab:
             model_path = Config.drive_model_folder_path + '/{}.h5'.format(savedModelName)
         else:
@@ -100,7 +101,7 @@ class Multivariate:
             # print("Model '{}' loaded from file.".format(savedModelName))
         else:
             # Define model
-            model = ModelBuilder.getModel(model_name, n_features)
+            model = ModelBuilder.getModel(model_name, n_features, PredictionDTO.n_steps)
             # Fit model TODO X or X_trait?
             if fit_regressor:
                 model.fit(X, y_outputs)
@@ -119,15 +120,7 @@ class Multivariate:
         # print("------------------------------------------------------")
         # future predictions
 
-        input_data = dataset[-Config.n_steps:]
-
-        for day in range(n_predict_future_days):
-            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
-            input_data = np.vstack((input_data, np.squeeze(future_prediction)))
-
-        future_prediction = input_data[Config.n_steps:]
-        future_prediction = [future_prediction[:, i].reshape((future_prediction.shape[0], 1)) for i in range(n_features)]
-        future_prediction = np.round(np.squeeze(future_prediction), 2)
+        future_prediction = Multivariate.get_future_predictions(PredictionDTO, dataset, model, n_features)
 
         # Evaluate the model
         train_predictions = model.predict(X_train)
@@ -154,13 +147,8 @@ class Multivariate:
         # print("------------------------------------------------------")
         # print("Train ref RMSE : ", train_rmse_ref)
 
-        # Sum the arrays element-wise at the same index
-        predictions = [np.concatenate(eachDatasetPrediction) for eachDatasetPrediction in
-                       zip(train_predictions, test_predictions)]
-        predictions = np.round(np.squeeze(predictions), 2)
-        actuals = np.concatenate((y_train, y_test))
-        actuals = [actuals[:, i].reshape((actuals.shape[0], 1)) for i in range(n_features)]
-        actuals = np.round(np.squeeze(actuals), 2)
+        actuals, predictions = Multivariate.transform_data(n_features, test_predictions, train_predictions, y_test,
+                                                           y_train)
         # print("actuals and predictions type : ", type(actuals),
         #       type(predictions))  # <class 'list'> <class 'numpy.ndarray'>
         # print("actuals and predictions shape : ", actuals.shape, predictions.shape)  # (284, 5)
@@ -194,3 +182,33 @@ class Multivariate:
         }
 
         return results, metrics
+
+    @staticmethod
+    def transform_data(n_features, test_predictions, train_predictions, y_test, y_train):
+        # Sum the arrays element-wise at the same index
+        predictions = [np.concatenate(eachDatasetPrediction) for eachDatasetPrediction in
+                       zip(train_predictions, test_predictions)]
+        predictions = np.round(np.squeeze(predictions), 2)
+        actuals = np.concatenate((y_train, y_test))
+        actuals = [actuals[:, i].reshape((actuals.shape[0], 1)) for i in range(n_features)]
+        actuals = np.round(np.squeeze(actuals), 2)
+        return actuals, predictions
+
+    @staticmethod
+    def get_future_predictions(PredictionDTO, dataset, model, n_features):
+        input_data = dataset[-Config.n_steps:]
+        for day in range(PredictionDTO.n_predict_future_days):
+            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+            input_data = np.vstack((input_data, np.squeeze(future_prediction)))
+        future_prediction = input_data[Config.n_steps:]
+        future_prediction = [future_prediction[:, i].reshape((future_prediction.shape[0], 1)) for i in
+                             range(n_features)]
+        future_prediction = np.round(np.squeeze(future_prediction), 2)
+        return future_prediction
+
+    @staticmethod
+    def extract_saved_model_name(PredictionDTO, price, model_name):
+        savedModelName = ('M-' + model_name + '-' + price + '-' + str(PredictionDTO.n_steps) + '-steps'
+                          + '-from-' + PredictionDTO.start_date.replace('-', '')
+                          + '-to-' + PredictionDTO.end_date.replace('-', ''))
+        return savedModelName
