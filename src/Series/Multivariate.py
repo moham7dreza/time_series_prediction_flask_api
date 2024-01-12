@@ -196,11 +196,12 @@ class Multivariate:
 
     @staticmethod
     def get_future_predictions(PredictionDTO, dataset, model, n_features):
-        input_data = dataset[-Config.n_steps:]
+        input_data = dataset[-PredictionDTO.n_steps:]
         for day in range(PredictionDTO.n_predict_future_days):
-            future_prediction = model.predict(input_data[-Config.n_steps:].reshape((1, Config.n_steps, n_features)))
+            future_prediction = model.predict(
+                input_data[-PredictionDTO.n_steps:].reshape((1, PredictionDTO.n_steps, n_features)))
             input_data = np.vstack((input_data, np.squeeze(future_prediction)))
-        future_prediction = input_data[Config.n_steps:]
+        future_prediction = input_data[PredictionDTO.n_steps:]
         future_prediction = [future_prediction[:, i].reshape((future_prediction.shape[0], 1)) for i in
                              range(n_features)]
         future_prediction = np.round(np.squeeze(future_prediction), 2)
