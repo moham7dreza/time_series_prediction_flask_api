@@ -33,7 +33,8 @@ class PredictionDTO:
         self.n_predict_future_days = requests.get("n_predict_future_days")
         self.start_date = requests.get("startDate")
         self.end_date = requests.get("endDate")
-        self.epochs = requests.get("epochs")
+        self.univariate_epochs = requests.get("univariate_epochs")
+        self.multivariate_epochs = requests.get("multivariate_epochs")
         self.batch_size = requests.get("batch_size")
         try:
             self.test_size = requests.get("test_size") / 100

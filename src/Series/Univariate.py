@@ -97,7 +97,7 @@ class Univariate:
             if fit_regressor:
                 model.fit(X_train, y_train)
             else:
-                model.fit(X_train, y_train, epochs=PredictionDTO.epochs, batch_size=PredictionDTO.batch_size)
+                model.fit(X_train, y_train, epochs=PredictionDTO.univariate_epochs, batch_size=PredictionDTO.batch_size)
 
             # Save the model
             model.save(model_path)
@@ -186,7 +186,7 @@ class Univariate:
                 + ']-'
                 + str(PredictionDTO.n_steps) + '-steps-'
                 + str(int(PredictionDTO.test_size * 100)) + '%-test-'
-                + str(PredictionDTO.epochs) + '-epochs-'
+                + str(PredictionDTO.univariate_epochs) + '-epochs-'
                 + str(PredictionDTO.batch_size) + '-batches-'
                 + str(int(PredictionDTO.dropout_rate * 100)) + '%-dropout'
         )

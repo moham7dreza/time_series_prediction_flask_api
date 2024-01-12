@@ -106,7 +106,7 @@ class Multivariate:
             if fit_regressor:
                 model.fit(X, y_outputs)
             else:
-                model.fit(X, y_outputs, epochs=PredictionDTO.epochs, batch_size=PredictionDTO.batch_size)
+                model.fit(X, y_outputs, epochs=PredictionDTO.multivariate_epochs, batch_size=PredictionDTO.batch_size)
 
             # Save the model
             model.save(model_path)
@@ -215,7 +215,7 @@ class Multivariate:
                 + ']-'
                 + str(PredictionDTO.n_steps) + '-steps-'
                 + str(int(PredictionDTO.test_size * 100)) + '%-test-'
-                + str(PredictionDTO.epochs) + '-epochs-'
+                + str(PredictionDTO.multivariate_epochs) + '-epochs-'
                 + str(PredictionDTO.batch_size) + '-batches-'
                 + str(int(PredictionDTO.dropout_rate * 100)) + '%-dropout'
         )
