@@ -144,7 +144,7 @@ def make_prediction():
 
     DTO = PredictionDTO()
 
-    PredictService.create(requests)
+    # PredictService.create(requests)
 
     datasets = DataLoader.get_datasets_refactored(DTO)
 
