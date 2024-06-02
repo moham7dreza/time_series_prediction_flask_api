@@ -160,7 +160,7 @@ class PredictionDTO:
     def __init__(self):
         self.n_steps = 3
         self.datasets = ['Dollar']
-        self.models = ['CNN']
+        self.models = ['CNN', 'LSTM']
         self.series = ['univariate']
         self.prices = ['<CLOSE>']
         self.metrics = ['MAE']
@@ -730,10 +730,12 @@ if __name__ == '__main__':
                                                                           )
 
     # labels is dates -> y
-    print(results['labels'])
+    print('\n [ + ] labels : ', results['labels'])
     # prediction values -> x
-    print(results['datasets']['U-CNN-Predict'])
+    print('\n [ + ] CNN model predictions : ', results['datasets']['U-CNN-Predict'])
+    print('\n [ + ] LSTM model predictions : ', results['datasets']['U-LSTM-Predict'])
     # actual values -> x
-    print(results['actuals'])
+    print('\n [ + ] actual values : ', results['actuals'])
     print('\n')
-    print(metrics)
+    print('\n [ + ] CNN model MAE : ', metrics['U-CNN-MAE']['dataset'][0])
+    print('\n [ + ] LSTM model MAE : ', metrics['U-CNN-MAE']['dataset'][1])
